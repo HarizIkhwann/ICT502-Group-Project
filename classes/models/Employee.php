@@ -25,10 +25,12 @@ class Employee {
     
     // Get all employees with department and job info
     public function getAllEmployees() {
-        $query = "SELECT e.*, d.department_name, p.position_title 
+        $query = "SELECT e.*, d.department_name, p.position_title,
+                  ce.contract_start_date, ce.contract_end_date
                   FROM {$this->table} e
                   LEFT JOIN DEPARTMENT d ON e.department_id = d.department_id
                   LEFT JOIN POSITION p ON e.position_id = p.position_id
+                  LEFT JOIN CONTRACT_EMPLOYEE ce ON e.employee_id = ce.employee_id
                   ORDER BY e.employee_id";
         
         $stid = oci_parse($this->connection, $query);
@@ -49,10 +51,12 @@ class Employee {
     
     // Get single employee by ID
     public function getEmployeeById($id) {
-        $query = "SELECT e.*, d.department_name, p.position_title 
+        $query = "SELECT e.*, d.department_name, p.position_title,
+                  ce.contract_start_date, ce.contract_end_date
                   FROM {$this->table} e
                   LEFT JOIN DEPARTMENT d ON e.department_id = d.department_id
                   LEFT JOIN POSITION p ON e.position_id = p.position_id
+                  LEFT JOIN CONTRACT_EMPLOYEE ce ON e.employee_id = ce.employee_id
                   WHERE e.employee_id = :id";
         
         $stid = oci_parse($this->connection, $query);
@@ -71,9 +75,11 @@ class Employee {
     
     // Get employees by department
     public function getEmployeesByDepartment($department_id) {
-        $query = "SELECT e.*, p.position_title 
+        $query = "SELECT e.*, p.position_title,
+                  ce.contract_start_date, ce.contract_end_date
                   FROM {$this->table} e
                   LEFT JOIN POSITION p ON e.position_id = p.position_id
+                  LEFT JOIN CONTRACT_EMPLOYEE ce ON e.employee_id = ce.employee_id
                   WHERE e.department_id = :dept_id
                   ORDER BY e.employee_id";
         

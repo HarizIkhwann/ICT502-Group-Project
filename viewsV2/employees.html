@@ -426,7 +426,7 @@
           document.getElementById("department_id").value = emp.DEPARTMENT_ID;
           document.getElementById("position_id").value = emp.POSITION_ID;
 
-          const empType = emp.CONTRACT_START ? "CONTRACT" : "PERMANENT";
+          const empType = emp.CONTRACT_START_DATE ? "CONTRACT" : "PERMANENT";
           document.querySelector(
             `input[name="emp_type"][value="${empType}"]`,
           ).checked = true;
@@ -437,9 +437,9 @@
               .classList.remove("hidden");
             document.getElementById("contract-fields").classList.add("grid");
             document.getElementById("contract_start").value =
-              emp.CONTRACT_START || "";
+              emp.CONTRACT_START_DATE || "";
             document.getElementById("contract_end").value =
-              emp.CONTRACT_END || "";
+              emp.CONTRACT_END_DATE || "";
           }
 
           title.textContent = "Edit Employee";
@@ -522,9 +522,9 @@
 
         if (typeFilter) {
           if (typeFilter === "PERMANENT") {
-            filtered = filtered.filter((emp) => !emp.CONTRACT_START);
+            filtered = filtered.filter((emp) => !emp.CONTRACT_START_DATE);
           } else if (typeFilter === "CONTRACT") {
-            filtered = filtered.filter((emp) => emp.CONTRACT_START);
+            filtered = filtered.filter((emp) => emp.CONTRACT_START_DATE);
           }
         }
 
@@ -543,7 +543,7 @@
 
         tbody.innerHTML = employees
           .map((emp) => {
-            const empType = emp.CONTRACT_START ? "CONTRACT" : "PERMANENT";
+            const empType = emp.CONTRACT_START_DATE ? "CONTRACT" : "PERMANENT";
             const typeClass =
               empType === "PERMANENT"
                 ? "bg-green-100 text-green-700"
@@ -564,7 +564,7 @@
                     </td>
                     <td class="px-6 py-4 text-gray-600">
                         <div class="text-sm"><i class="fas fa-envelope mr-2 text-gray-400"></i>${emp.EMAIL}</div>
-                        <div class="text-sm mt-1"><i class="fas fa-phone mr-2 text-gray-400"></i>${emp.PHONE}</div>
+                        <div class="text-sm mt-1"><i class="fas fa-phone mr-2 text-gray-400"></i>${emp.PHONE_NUMBER || 'N/A'}</div>
                     </td>
                     <td class="px-6 py-4 text-gray-700">${emp.DEPARTMENT_NAME || "N/A"}</td>
                     <td class="px-6 py-4 text-gray-700">${emp.POSITION_TITLE || "N/A"}</td>
@@ -585,8 +585,8 @@
       function updateStats(employees) {
         document.getElementById("total-employees").textContent =
           employees.length;
-        const permanent = employees.filter((emp) => !emp.CONTRACT_START).length;
-        const contract = employees.filter((emp) => emp.CONTRACT_START).length;
+        const permanent = employees.filter((emp) => !emp.CONTRACT_START_DATE).length;
+        const contract = employees.filter((emp) => emp.CONTRACT_START_DATE).length;
         document.getElementById("permanent-count").textContent = permanent;
         document.getElementById("contract-count").textContent = contract;
       }
