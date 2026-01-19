@@ -5,6 +5,7 @@ A comprehensive Human Resources Management System built with PHP, Oracle Databas
 ## 🚀 Features
 
 ### Core Modules
+
 - **Employee Management** - Manage permanent and contract employees with complete profiles
 - **Department Management** - Organize departments with budgets and managers
 - **Position Management** - Define job roles with salary ranges
@@ -15,6 +16,7 @@ A comprehensive Human Resources Management System built with PHP, Oracle Databas
 - **Performance Evaluation** - Assess employee performance with scoring system
 
 ### Key Features
+
 - ✅ Full CRUD operations for all modules
 - ✅ Real-time API integration
 - ✅ Responsive design (mobile & desktop)
@@ -26,11 +28,13 @@ A comprehensive Human Resources Management System built with PHP, Oracle Databas
 ## 🛠️ Technology Stack
 
 ### Backend
+
 - **PHP** - OOP architecture with controllers and models
 - **Oracle Database 23c** - Enterprise database with OCI8 driver
 - **RESTful API** - JSON-based API endpoints
 
 ### Frontend
+
 - **HTML5** - Semantic markup
 - **Tailwind CSS** - Modern utility-first CSS framework
 - **Vanilla JavaScript** - Clean, dependency-free code
@@ -47,6 +51,7 @@ A comprehensive Human Resources Management System built with PHP, Oracle Databas
 ## 🔧 Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/hr-management-system.git
    cd hr-management-system
@@ -62,7 +67,7 @@ A comprehensive Human Resources Management System built with PHP, Oracle Databas
 3. **Configure API Base URL**
    - Update `viewsV2/app.js` if your installation path differs:
      ```javascript
-     API_BASE: 'http://localhost/YOUR_PROJECT_PATH/api'
+     API_BASE: "http://localhost/YOUR_PROJECT_PATH/api";
      ```
 
 4. **Start your web server**
@@ -99,14 +104,18 @@ A comprehensive Human Resources Management System built with PHP, Oracle Databas
 ## 🎯 Usage
 
 ### Dashboard
+
 Access the main dashboard at `viewsV2/index.html` to see:
+
 - Total employees, departments, positions
 - Pending leave requests
 - Today's attendance
 - Quick action buttons
 
 ### Module Navigation
+
 Use the sidebar to navigate between different modules:
+
 - Employees - Add/Edit/Delete employee records
 - Departments - Manage organizational units
 - Positions - Define job roles and salaries
@@ -134,19 +143,3 @@ POST /api/{module}/create.php      - Create new record
 POST /api/{module}/update.php      - Update existing record
 POST /api/{module}/delete.php      - Delete record
 ```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 👥 Team
-
-Developed as part of ICT502 Group Project
-
-## 📞 Support
-
-For issues and questions, please open an issue on GitHub.
