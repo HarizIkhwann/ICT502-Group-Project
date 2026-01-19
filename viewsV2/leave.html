@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leave Management - HR Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Mobile Header -->
+    <div
+      class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md"
+    >
+      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div
+      id="sidebar-overlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-black/50 z-40 hidden"
+    ></div>
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar Container -->
+      <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+          <!-- Header -->
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+          >
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800">Leave Management</h1>
+              <p class="text-gray-500 text-sm">
+                Manage employee leave requests and approvals
+              </p>
+            </div>
+            <button
+              onclick="openModal()"
+              class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg shadow-lg flex items-center justify-center font-semibold transition"
+            >
+              <i class="fas fa-calendar-plus mr-2"></i> Request Leave
+            </button>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-calendar-alt text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Total Requests
+                  </p>
+                  <h2
+                    id="total-requests"
+                    class="text-2xl font-bold text-gray-900"
+                  >
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-clock text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Pending
+                  </p>
+                  <h2
+                    id="pending-count"
+                    class="text-2xl font-bold text-gray-900"
+                  >
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-check-circle text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Approved
+                  </p>
+                  <h2
+                    id="approved-count"
+                    class="text-2xl font-bold text-gray-900"
+                  >
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-times-circle text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Rejected
+                  </p>
+                  <h2
+                    id="rejected-count"
+                    class="text-2xl font-bold text-gray-900"
+                  >
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div
+            class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6"
+          >
+            <div class="flex flex-wrap gap-4">
+              <select
+                id="employee-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">All Employees</option>
+              </select>
+              <select
+                id="status-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+              </select>
+              <button
+                onclick="filterLeave()"
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+              >
+                <i class="fas fa-filter mr-2"></i> Filter
+              </button>
+              <button
+                onclick="resetFilter()"
+                class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold"
+              >
+                <i class="fas fa-redo mr-2"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Leave Table -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto"
+          >
+            <table class="w-full text-left">
+              <thead
+                class="bg-gray-50 border-b border-gray-200 text-gray-600 text-xs uppercase font-bold tracking-wider"
+              >
+                <tr>
+                  <th class="px-6 py-4">Employee</th>
+                  <th class="px-6 py-4">Leave Type</th>
+                  <th class="px-6 py-4">Duration</th>
+                  <th class="px-6 py-4">Days</th>
+                  <th class="px-6 py-4">Reason</th>
+                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-gray-100 text-sm">
+                <tr>
+                  <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                    Loading...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
+      >
+        <div
+          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center"
+        >
+          <h3 id="modal-title" class="text-xl font-bold text-gray-800">
+            Request Leave
+          </h3>
+          <button
+            onclick="closeModal()"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="leave-form" class="p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Employee</label
+              >
+              <select
+                id="employee_id"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">Select Employee</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Leave Type</label
+              >
+              <select
+                id="leave_type"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">Select Type</option>
+                <option value="SICK">Sick Leave</option>
+                <option value="VACATION">Vacation</option>
+                <option value="PERSONAL">Personal</option>
+                <option value="UNPAID">Unpaid</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Start Date</label
+              >
+              <input
+                type="date"
+                id="start_date"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >End Date</label
+              >
+              <input
+                type="date"
+                id="end_date"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Reason</label
+              >
+              <textarea
+                id="reason"
+                required
+                rows="3"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Explain the reason for leave"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-6 mt-6 border-t">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="hidden"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+      let editingId = null;
+      let allLeave = [];
+
+      // Open modal
+      function openModal(leave = null) {
+        const modal = document.getElementById("modal");
+        const form = document.getElementById("leave-form");
+        const title = document.getElementById("modal-title");
+
+        if (leave) {
+          editingId = leave.LEAVE_ID;
+          document.getElementById("employee_id").value = leave.EMPLOYEE_ID;
+          document.getElementById("leave_type").value = leave.LEAVE_TYPE;
+          document.getElementById("start_date").value = leave.START_DATE;
+          document.getElementById("end_date").value = leave.END_DATE;
+          document.getElementById("reason").value = leave.REASON;
+          title.textContent = "Edit Leave Request";
+        } else {
+          editingId = null;
+          form.reset();
+          title.textContent = "Request Leave";
+        }
+        modal.classList.remove("hidden");
+      }
+
+      // Close modal
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+      }
+
+      // Load employees
+      async function loadEmployees() {
+        try {
+          const result = await Utils.apiCall("/employees/list.php");
+          if (result.success && result.data) {
+            const select = document.getElementById("employee_id");
+            const filter = document.getElementById("employee-filter");
+
+            result.data.forEach((emp) => {
+              const option = `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
+              select.innerHTML += option;
+              filter.innerHTML += option;
+            });
+          }
+        } catch (error) {
+          console.error("Failed to load employees:", error);
+        }
+      }
+
+      // Load leave
+      async function loadLeave() {
+        try {
+          const result = await Utils.apiCall("/leave/list.php");
+
+          if (result.success && result.data) {
+            allLeave = result.data;
+            displayLeave(result.data);
+            updateStats(result.data);
+          } else {
+            throw new Error(result.message || "Failed to load leave requests");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to load leave: " + error.message,
+            "error",
+          );
+          document.getElementById("table-body").innerHTML =
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
+        }
+      }
+
+      // Filter leave
+      function filterLeave() {
+        const employeeFilter = document.getElementById("employee-filter").value;
+        const statusFilter = document.getElementById("status-filter").value;
+        let filtered = allLeave;
+
+        if (employeeFilter) {
+          filtered = filtered.filter(
+            (leave) => leave.EMPLOYEE_ID == employeeFilter,
+          );
+        }
+
+        if (statusFilter) {
+          filtered = filtered.filter((leave) => leave.STATUS === statusFilter);
+        }
+
+        displayLeave(filtered);
+      }
+
+      // Reset filter
+      function resetFilter() {
+        document.getElementById("employee-filter").value = "";
+        document.getElementById("status-filter").value = "";
+        displayLeave(allLeave);
+      }
+
+      // Calculate days
+      function calculateDays(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        return diffDays;
+      }
+
+      // Display leave
+      function displayLeave(leave) {
+        const tbody = document.getElementById("table-body");
+
+        if (!leave || leave.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No leave requests found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = leave
+          .map((lv) => {
+            const days = calculateDays(lv.START_DATE, lv.END_DATE);
+
+            let statusClass = "";
+            let statusIcon = "";
+            switch (lv.STATUS) {
+              case "PENDING":
+                statusClass = "bg-yellow-100 text-yellow-700";
+                statusIcon = "fa-clock";
+                break;
+              case "APPROVED":
+                statusClass = "bg-green-100 text-green-700";
+                statusIcon = "fa-check-circle";
+                break;
+              case "REJECTED":
+                statusClass = "bg-red-100 text-red-700";
+                statusIcon = "fa-times-circle";
+                break;
+            }
+
+            return `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center mr-3 font-bold text-sm">
+                                ${lv.FIRST_NAME[0]}${lv.LAST_NAME[0]}
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900">${lv.FIRST_NAME} ${lv.LAST_NAME}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full font-semibold bg-blue-100 text-blue-700">${lv.LEAVE_TYPE}</span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">
+                        <div class="text-sm">${Utils.formatDate(lv.START_DATE)}</div>
+                        <div class="text-xs text-gray-500">to ${Utils.formatDate(lv.END_DATE)}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="font-bold text-gray-900">${days} ${days === 1 ? "day" : "days"}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="max-w-xs truncate text-gray-600" title="${lv.REASON}">${lv.REASON}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusClass}">
+                            <i class="fas ${statusIcon} mr-1"></i>${lv.STATUS}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center space-x-3 text-lg">
+                        ${
+                          lv.STATUS === "PENDING"
+                            ? `
+                            <button onclick="updateStatus(${lv.LEAVE_ID}, 'APPROVED')" class="text-gray-400 hover:text-green-600" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button onclick="updateStatus(${lv.LEAVE_ID}, 'REJECTED')" class="text-gray-400 hover:text-red-600" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `
+                            : ""
+                        }
+                        <button onclick='editLeave(${JSON.stringify(lv)})' class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteLeave(${lv.LEAVE_ID})" class="text-gray-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+          })
+          .join("");
+      }
+
+      // Update stats
+      function updateStats(leave) {
+        document.getElementById("total-requests").textContent = leave.length;
+
+        const pending = leave.filter((lv) => lv.STATUS === "PENDING").length;
+        const approved = leave.filter((lv) => lv.STATUS === "APPROVED").length;
+        const rejected = leave.filter((lv) => lv.STATUS === "REJECTED").length;
+
+        document.getElementById("pending-count").textContent = pending;
+        document.getElementById("approved-count").textContent = approved;
+        document.getElementById("rejected-count").textContent = rejected;
+      }
+
+      // Edit leave
+      function editLeave(leave) {
+        openModal(leave);
+      }
+
+      // Update status
+      async function updateStatus(leaveId, status) {
+        const action = status === "APPROVED" ? "approve" : "reject";
+        if (!confirm(`Are you sure you want to ${action} this leave request?`))
+          return;
+
+        try {
+          const result = await Utils.apiCall("/leave/update-status.php", {
+            method: "POST",
+            body: JSON.stringify({ leave_id: leaveId, status: status }),
+          });
+
+          if (result.success) {
+            Utils.showNotification(`Leave request ${status.toLowerCase()}`);
+            loadLeave();
+          } else {
+            throw new Error(result.message || "Failed to update status");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to update status: " + error.message,
+            "error",
+          );
+        }
+      }
+
+      // Delete leave
+      async function deleteLeave(id) {
+        if (!confirm("Are you sure you want to delete this leave request?"))
+          return;
+
+        try {
+          const result = await Utils.apiCall("/leave/delete.php", {
+            method: "POST",
+            body: JSON.stringify({ leave_id: id }),
+          });
+
+          if (result.success) {
+            Utils.showNotification("Leave request deleted successfully");
+            loadLeave();
+          } else {
+            throw new Error(result.message || "Failed to delete");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to delete leave: " + error.message,
+            "error",
+          );
+        }
+      }
+
+      // Form submission
+      document
+        .getElementById("leave-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const startDate = document.getElementById("start_date").value;
+          const endDate = document.getElementById("end_date").value;
+
+          if (new Date(startDate) > new Date(endDate)) {
+            Utils.showNotification(
+              "End date must be after start date",
+              "error",
+            );
+            return;
+          }
+
+          const formData = {
+            employee_id: parseInt(document.getElementById("employee_id").value),
+            leave_type: document.getElementById("leave_type").value,
+            start_date: startDate,
+            end_date: endDate,
+            reason: document.getElementById("reason").value,
+          };
+
+          if (editingId) {
+            formData.leave_id = editingId;
+          }
+
+          try {
+            const endpoint = editingId
+              ? "/leave/update.php"
+              : "/leave/create.php";
+            const result = await Utils.apiCall(endpoint, {
+              method: "POST",
+              body: JSON.stringify(formData),
+            });
+
+            if (result.success) {
+              Utils.showNotification(
+                editingId
+                  ? "Leave updated successfully"
+                  : "Leave request submitted successfully",
+              );
+              closeModal();
+              loadLeave();
+            } else {
+              throw new Error(result.message || "Operation failed");
+            }
+          } catch (error) {
+            Utils.showNotification(
+              "Failed to save leave: " + error.message,
+              "error",
+            );
+          }
+        });
+
+      // Load on page ready
+      document.addEventListener("DOMContentLoaded", () => {
+        loadEmployees();
+        loadLeave();
+      });
+    </script>
+  </body>
+</html>

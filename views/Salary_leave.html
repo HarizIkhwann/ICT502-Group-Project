@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR System - Salary & Leave</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+    <!-- Mobile Header -->
+    <div
+      class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center"
+    >
+      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div
+      id="sidebar-overlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity"
+    ></div>
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar injected here -->
+      <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+      <!-- Main -->
+      <main class="flex-1 p-6 max-w-7xl mx-auto space-y-14">
+        <!-- SALARY TABLE -->
+        <section>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-800">
+              💰 Payroll / Salary
+            </h2>
+            <button
+              onclick="toggleSalaryModal()"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2"
+            >
+              <i class="fas fa-plus"></i> Add New Salary
+            </button>
+          </div>
+
+          <div
+            id="salaryModal"
+            class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4"
+          >
+            <div
+              class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden"
+            >
+              <div
+                class="bg-slate-900 text-white p-4 flex justify-between items-center"
+              >
+                <h3 class="text-lg font-bold">Add New Salary Entry</h3>
+                <button
+                  onclick="toggleSalaryModal()"
+                  class="text-gray-400 hover:text-white"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+
+              <form id="payroll-form" class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-1"
+                    >Employee ID</label
+                  >
+                  <input
+                    type="number"
+                    id="payroll_employee_id"
+                    placeholder="e.g. 1"
+                    required
+                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      class="block text-sm font-semibold text-gray-700 mb-1"
+                      >Gross Pay</label
+                    >
+                    <input
+                      type="number"
+                      id="gross_pay"
+                      placeholder="6000"
+                      required
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-sm font-semibold text-gray-700 mb-1"
+                      >Tax</label
+                    >
+                    <input
+                      type="number"
+                      id="tax"
+                      placeholder="600"
+                      required
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      class="block text-sm font-semibold text-gray-700 mb-1"
+                      >Allowance</label
+                    >
+                    <input
+                      type="number"
+                      id="allowance"
+                      placeholder="300"
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-sm font-semibold text-gray-700 mb-1"
+                      >Overtime Pay</label
+                    >
+                    <input
+                      type="number"
+                      id="overtime_pay"
+                      placeholder="200"
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-1"
+                    >Pay Period</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="date"
+                      id="pay_period_start"
+                      required
+                      class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                    <span class="text-gray-400">to</span>
+                    <input
+                      type="date"
+                      id="pay_period_end"
+                      required
+                      class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                  <button
+                    type="button"
+                    onclick="toggleSalaryModal(false)"
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-md"
+                  >
+                    Save Record
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow border overflow-x-auto">
+            <table class="w-full min-w-[1200px] text-left">
+              <thead
+                class="bg-gray-50 text-xs uppercase font-bold text-gray-600"
+              >
+                <tr>
+                  <th class="px-6 py-4">Payroll ID</th>
+                  <th class="px-6 py-4">Employee ID</th>
+                  <th class="px-6 py-4">Gross Pay</th>
+                  <th class="px-6 py-4">Tax</th>
+                  <th class="px-6 py-4">Allowance</th>
+                  <th class="px-6 py-4">Overtime Pay</th>
+                  <th class="px-6 py-4">Net Pay</th>
+                  <th class="px-6 py-4">Pay Period</th>
+                  <th class="px-6 py-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="payroll-table-body" class="divide-y text-sm"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- LEAVE TABLE -->
+        <section>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-800">🗓 Employee Leave</h2>
+            <button
+              onclick="toggleLeaveModal(true)"
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2"
+            >
+              <i class="fas fa-plus"></i> Add Leave Request
+            </button>
+          </div>
+
+          <div class="bg-white rounded-xl shadow border overflow-x-auto">
+            <table class="w-full min-w-[1200px] text-left">
+              <thead
+                class="bg-gray-50 text-xs uppercase font-bold text-gray-600"
+              >
+                <tr>
+                  <th class="px-6 py-4">Leave ID</th>
+                  <th class="px-6 py-4">Employee ID</th>
+                  <th class="px-6 py-4">Leave Type</th>
+                  <th class="px-6 py-4">Start Date</th>
+                  <th class="px-6 py-4">End Date</th>
+                  <th class="px-6 py-4">Reason</th>
+                  <th class="px-6 py-4">Application Date</th>
+                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="leave-table-body" class="divide-y text-sm"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- LEAVE TYPE TABLE -->
+        <section>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">🏷 Leave Types</h2>
+
+          <div class="bg-white rounded-xl shadow border overflow-x-auto">
+            <table class="w-full text-left">
+              <thead
+                class="bg-gray-50 text-xs uppercase font-bold text-gray-600"
+              >
+                <tr>
+                  <th class="px-6 py-4">Leave Type ID</th>
+                  <th class="px-6 py-4">Type Name</th>
+                </tr>
+              </thead>
+              <tbody id="leave-types-body" class="divide-y text-sm"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Leave Modal -->
+    <div
+      id="leaveModal"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden"
+      >
+        <div
+          class="bg-slate-900 text-white p-4 flex justify-between items-center"
+        >
+          <h3 class="text-lg font-bold">Add Leave Request</h3>
+          <button
+            onclick="toggleLeaveModal(false)"
+            class="text-gray-400 hover:text-white"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form id="leave-form" class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Employee ID</label
+            >
+            <input
+              type="number"
+              id="leave_employee_id"
+              placeholder="e.g. 1"
+              required
+              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Leave Type</label
+            >
+            <select
+              id="leave_type_id"
+              required
+              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none bg-white"
+            >
+              <option value="">Select leave type...</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Start Date</label
+              >
+              <input
+                type="date"
+                id="leave_start_date"
+                required
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >End Date</label
+              >
+              <input
+                type="date"
+                id="leave_end_date"
+                required
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1"
+              >Reason</label
+            >
+            <textarea
+              id="leave_reason"
+              rows="3"
+              required
+              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+            ></textarea>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            <button
+              type="button"
+              onclick="toggleLeaveModal(false)"
+              class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium shadow-md"
+            >
+              Submit Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="notification"
+      class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg hidden z-[70] transition-all"
+    ></div>
+
+    <script>
+      fetch("sidebar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-container").innerHTML = html;
+        });
+    </script>
+
+    <script>
+      const API_BASE = "http://localhost/ICT502%20Group%20Project/api";
+      let editingPayrollId = null;
+      let editingLeaveId = null;
+
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        sidebar?.classList.toggle("-translate-x-full");
+        overlay?.classList.toggle("hidden");
+      }
+
+      function toggleSalaryModal(show, payrollData = null) {
+        const modal = document.getElementById("salaryModal");
+        const form = document.getElementById("payroll-form");
+
+        if (show) {
+          if (payrollData) {
+            editingPayrollId = payrollData.PAYROLL_ID;
+            document.getElementById("payroll_employee_id").value =
+              payrollData.EMPLOYEE_ID;
+            document.getElementById("gross_pay").value = payrollData.GROSS_PAY;
+            document.getElementById("tax").value = payrollData.TAX;
+            document.getElementById("allowance").value =
+              payrollData.ALLOWANCE || 0;
+            document.getElementById("overtime_pay").value =
+              payrollData.OVERTIME_PAY || 0;
+            document.getElementById("pay_period_start").value =
+              payrollData.PAY_PERIOD_START?.split("T")[0] || "";
+            document.getElementById("pay_period_end").value =
+              payrollData.PAY_PERIOD_END?.split("T")[0] || "";
+            modal.querySelector("h3").textContent = "Edit Salary Entry";
+          } else {
+            editingPayrollId = null;
+            form.reset();
+            modal.querySelector("h3").textContent = "Add New Salary Entry";
+          }
+          modal.classList.remove("hidden");
+        } else {
+          modal.classList.add("hidden");
+        }
+      }
+
+      function toggleLeaveModal(show, leaveData = null) {
+        const modal = document.getElementById("leaveModal");
+        const form = document.getElementById("leave-form");
+
+        if (show) {
+          if (leaveData) {
+            editingLeaveId = leaveData.LEAVE_ID;
+            document.getElementById("leave_employee_id").value =
+              leaveData.EMPLOYEE_ID;
+            document.getElementById("leave_type_id").value =
+              leaveData.LEAVE_TYPE_ID;
+            document.getElementById("leave_start_date").value =
+              leaveData.START_DATE?.split("T")[0] || "";
+            document.getElementById("leave_end_date").value =
+              leaveData.END_DATE?.split("T")[0] || "";
+            document.getElementById("leave_reason").value =
+              leaveData.REASON || "";
+            modal.querySelector("h3").textContent = "Edit Leave Request";
+          } else {
+            editingLeaveId = null;
+            form.reset();
+            modal.querySelector("h3").textContent = "Add Leave Request";
+          }
+          modal.classList.remove("hidden");
+        } else {
+          modal.classList.add("hidden");
+        }
+      }
+
+      function showNotification(message, type = "success") {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-[70] transition-all ${
+          type === "success"
+            ? "bg-green-500 text-white"
+            : "bg-red-500 text-white"
+        }`;
+        notification.classList.remove("hidden");
+        setTimeout(() => notification.classList.add("hidden"), 3000);
+      }
+
+      // Close modals on outside click
+      window.onclick = function (event) {
+        const salaryModal = document.getElementById("salaryModal");
+        const leaveModal = document.getElementById("leaveModal");
+        if (event.target == salaryModal) {
+          toggleSalaryModal(false);
+        }
+        if (event.target == leaveModal) {
+          toggleLeaveModal(false);
+        }
+      };
+
+      // ============ PAYROLL FUNCTIONS ============
+      async function loadPayroll() {
+        try {
+          const response = await fetch(`${API_BASE}/payroll/list.php`);
+          const result = await response.json();
+
+          if (result.success) {
+            displayPayroll(result.data);
+          } else {
+            showNotification(
+              "Error loading payroll: " + result.message,
+              "error",
+            );
+          }
+        } catch (error) {
+          showNotification("Failed to load payroll records", "error");
+          console.error(error);
+        }
+      }
+
+      function displayPayroll(payrolls) {
+        const tableBody = document.getElementById("payroll-table-body");
+        tableBody.innerHTML = "";
+
+        if (!payrolls || payrolls.length === 0) {
+          tableBody.innerHTML =
+            '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-500">No payroll records found</td></tr>';
+          return;
+        }
+
+        payrolls.forEach((payroll) => {
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50 transition";
+
+          const grossPay = parseFloat(payroll.GROSS_PAY || 0);
+          const tax = parseFloat(payroll.TAX || 0);
+          const allowance = parseFloat(payroll.ALLOWANCE || 0);
+          const overtime = parseFloat(payroll.OVERTIME_PAY || 0);
+          const netPay = grossPay - tax + allowance + overtime;
+
+          const startDate = payroll.PAY_PERIOD_START?.split("T")[0] || "N/A";
+          const endDate = payroll.PAY_PERIOD_END?.split("T")[0] || "N/A";
+
+          row.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-blue-600 font-bold">${payroll.PAYROLL_ID}</td>
+                    <td class="px-6 py-4 font-mono">${payroll.EMPLOYEE_ID}</td>
+                    <td class="px-6 py-4">$${grossPay.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="px-6 py-4">$${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="px-6 py-4">$${allowance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="px-6 py-4">$${overtime.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="px-6 py-4 font-bold text-green-600">$${netPay.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td class="px-6 py-4 text-xs">${startDate} → ${endDate}</td>
+                    <td class="px-6 py-4 text-center space-x-3 text-lg">
+                        <button class="text-gray-400 hover:text-blue-600 edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="text-gray-400 hover:text-red-600 delete-btn"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+
+          row
+            .querySelector(".edit-btn")
+            .addEventListener("click", () => editPayroll(payroll));
+          row
+            .querySelector(".delete-btn")
+            .addEventListener("click", () => deletePayroll(payroll.PAYROLL_ID));
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      function editPayroll(payroll) {
+        toggleSalaryModal(true, payroll);
+      }
+
+      async function deletePayroll(id) {
+        if (!confirm("Are you sure you want to delete this payroll record?"))
+          return;
+
+        try {
+          const response = await fetch(`${API_BASE}/payroll/delete.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ payroll_id: id }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showNotification("Payroll record deleted successfully", "success");
+            loadPayroll();
+          } else {
+            showNotification("Error: " + result.message, "error");
+          }
+        } catch (error) {
+          showNotification("Failed to delete payroll record", "error");
+          console.error(error);
+        }
+      }
+
+      document
+        .getElementById("payroll-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = {
+            employee_id: parseInt(
+              document.getElementById("payroll_employee_id").value,
+            ),
+            gross_pay: parseFloat(document.getElementById("gross_pay").value),
+            tax: parseFloat(document.getElementById("tax").value),
+            allowance:
+              parseFloat(document.getElementById("allowance").value) || 0,
+            overtime_pay:
+              parseFloat(document.getElementById("overtime_pay").value) || 0,
+            pay_period_start: document.getElementById("pay_period_start").value,
+            pay_period_end: document.getElementById("pay_period_end").value,
+          };
+
+          try {
+            let response;
+            if (editingPayrollId) {
+              formData.payroll_id = editingPayrollId;
+              response = await fetch(`${API_BASE}/payroll/update.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+              });
+            } else {
+              response = await fetch(`${API_BASE}/payroll/create.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+              });
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              showNotification(
+                editingPayrollId
+                  ? "Payroll updated successfully"
+                  : "Payroll created successfully",
+                "success",
+              );
+              toggleSalaryModal(false);
+              loadPayroll();
+            } else {
+              showNotification("Error: " + result.message, "error");
+            }
+          } catch (error) {
+            showNotification("Failed to save payroll record", "error");
+            console.error(error);
+          }
+        });
+
+      // ============ LEAVE FUNCTIONS ============
+      async function loadLeaveTypes() {
+        try {
+          const response = await fetch(`${API_BASE}/leave/types.php`);
+          const result = await response.json();
+
+          if (result.success) {
+            populateLeaveTypes(result.data);
+            displayLeaveTypes(result.data);
+          }
+        } catch (error) {
+          console.error("Failed to load leave types:", error);
+        }
+      }
+
+      function populateLeaveTypes(types) {
+        const select = document.getElementById("leave_type_id");
+        select.innerHTML = '<option value="">Select leave type...</option>';
+
+        types.forEach((type) => {
+          const option = document.createElement("option");
+          option.value = type.LEAVE_TYPE_ID;
+          option.textContent = type.TYPE_NAME;
+          select.appendChild(option);
+        });
+      }
+
+      function displayLeaveTypes(types) {
+        const tbody = document.getElementById("leave-types-body");
+        tbody.innerHTML = "";
+
+        if (!types || types.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="2" class="px-6 py-8 text-center text-gray-500">No leave types found</td></tr>';
+          return;
+        }
+
+        types.forEach((type) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                    <td class="px-6 py-4 font-mono">${type.LEAVE_TYPE_ID}</td>
+                    <td class="px-6 py-4">${type.TYPE_NAME}</td>
+                `;
+          tbody.appendChild(row);
+        });
+      }
+
+      async function loadLeave() {
+        try {
+          const response = await fetch(`${API_BASE}/leave/list.php`);
+          const result = await response.json();
+
+          if (result.success) {
+            displayLeave(result.data);
+          } else {
+            showNotification(
+              "Error loading leave records: " + result.message,
+              "error",
+            );
+          }
+        } catch (error) {
+          showNotification("Failed to load leave records", "error");
+          console.error(error);
+        }
+      }
+
+      function displayLeave(leaves) {
+        const tableBody = document.getElementById("leave-table-body");
+        tableBody.innerHTML = "";
+
+        if (!leaves || leaves.length === 0) {
+          tableBody.innerHTML =
+            '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-500">No leave requests found</td></tr>';
+          return;
+        }
+
+        leaves.forEach((leave) => {
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50 transition";
+
+          const statusColor = getStatusColor(leave.STATUS);
+
+          row.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-blue-600 font-bold">${leave.LEAVE_ID}</td>
+                    <td class="px-6 py-4 font-mono">${leave.EMPLOYEE_ID}</td>
+                    <td class="px-6 py-4">${leave.TYPE_NAME || leave.LEAVE_TYPE_ID}</td>
+                    <td class="px-6 py-4">${leave.START_DATE?.split("T")[0] || "N/A"}</td>
+                    <td class="px-6 py-4">${leave.END_DATE?.split("T")[0] || "N/A"}</td>
+                    <td class="px-6 py-4 max-w-xs truncate" title="${leave.REASON || ""}">${leave.REASON || "-"}</td>
+                    <td class="px-6 py-4">${leave.APPLICATION_DATE?.split("T")[0] || "N/A"}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full ${statusColor} font-medium">${leave.STATUS}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center space-x-3 text-lg">
+                        <button class="text-gray-400 hover:text-blue-600 edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="text-gray-400 hover:text-red-600 delete-btn"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+
+          row
+            .querySelector(".edit-btn")
+            .addEventListener("click", () => editLeave(leave));
+          row
+            .querySelector(".delete-btn")
+            .addEventListener("click", () => deleteLeave(leave.LEAVE_ID));
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      function getStatusColor(status) {
+        switch (status) {
+          case "Approved":
+            return "bg-green-100 text-green-700";
+          case "Pending":
+            return "bg-yellow-100 text-yellow-700";
+          case "Rejected":
+            return "bg-red-100 text-red-700";
+          default:
+            return "bg-gray-100 text-gray-700";
+        }
+      }
+
+      function editLeave(leave) {
+        toggleLeaveModal(true, leave);
+      }
+
+      async function deleteLeave(id) {
+        if (!confirm("Are you sure you want to delete this leave request?"))
+          return;
+
+        try {
+          const response = await fetch(`${API_BASE}/leave/delete.php`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ leave_id: id }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showNotification("Leave request deleted successfully", "success");
+            loadLeave();
+          } else {
+            showNotification("Error: " + result.message, "error");
+          }
+        } catch (error) {
+          showNotification("Failed to delete leave request", "error");
+          console.error(error);
+        }
+      }
+
+      document
+        .getElementById("leave-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = {
+            employee_id: parseInt(
+              document.getElementById("leave_employee_id").value,
+            ),
+            leave_type_id: parseInt(
+              document.getElementById("leave_type_id").value,
+            ),
+            start_date: document.getElementById("leave_start_date").value,
+            end_date: document.getElementById("leave_end_date").value,
+            reason: document.getElementById("leave_reason").value,
+          };
+
+          try {
+            let response;
+            if (editingLeaveId) {
+              formData.leave_id = editingLeaveId;
+              response = await fetch(`${API_BASE}/leave/update.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+              });
+            } else {
+              response = await fetch(`${API_BASE}/leave/create.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+              });
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              showNotification(
+                editingLeaveId
+                  ? "Leave request updated successfully"
+                  : "Leave request created successfully",
+                "success",
+              );
+              toggleLeaveModal(false);
+              loadLeave();
+            } else {
+              showNotification("Error: " + result.message, "error");
+            }
+          } catch (error) {
+            showNotification("Failed to save leave request", "error");
+            console.error(error);
+          }
+        });
+
+      // Initialize on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        loadPayroll();
+        loadLeave();
+        loadLeaveTypes();
+      });
+    </script>
+  </body>
+</html>

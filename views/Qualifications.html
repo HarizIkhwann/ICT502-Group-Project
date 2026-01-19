@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR System - Qualifications Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+
+  <body class="bg-gray-100 font-sans">
+    <div
+      class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md"
+    >
+      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div
+      id="sidebar-overlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity"
+    ></div>
+
+    <div class="flex min-h-screen">
+      <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+      <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+          >
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800">
+                Qualifications & Certifications
+              </h1>
+              <p class="text-gray-500 text-sm">
+                Manage employee skills, degrees, and professional certifications
+              </p>
+            </div>
+            <button
+              onclick="toggleModal(true)"
+              class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg shadow-lg flex items-center justify-center font-semibold transition"
+            >
+              <i class="fas fa-plus-circle mr-2"></i> Add Qualification
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center"
+            >
+              <div
+                class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mr-4"
+              >
+                <i class="fas fa-graduation-cap text-xl"></i>
+              </div>
+              <div>
+                <p
+                  class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                >
+                  Total Qualifications
+                </p>
+                <h2 id="total-quals" class="text-2xl font-bold text-gray-900">
+                  0
+                </h2>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center"
+            >
+              <div
+                class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4"
+              >
+                <i class="fas fa-certificate text-xl"></i>
+              </div>
+              <div>
+                <p
+                  class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                >
+                  Active Certifications
+                </p>
+                <h2 id="active-certs" class="text-2xl font-bold text-gray-900">
+                  0
+                </h2>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center"
+            >
+              <div
+                class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4"
+              >
+                <i class="fas fa-users text-xl"></i>
+              </div>
+              <div>
+                <p
+                  class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                >
+                  Employees w/ Quals
+                </p>
+                <h2
+                  id="qualified-employees"
+                  class="text-2xl font-bold text-gray-900"
+                >
+                  0
+                </h2>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2"
+              >Filter by Employee</label
+            >
+            <select
+              id="employee-filter"
+              onchange="filterQualifications()"
+              class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+            >
+              <option value="">All Employees</option>
+            </select>
+          </div>
+
+          <div
+            class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto"
+          >
+            <table class="w-full text-left min-w-[1100px]">
+              <thead
+                class="bg-gray-50 border-b border-gray-200 text-gray-600 text-xs uppercase font-bold tracking-wider"
+              >
+                <tr>
+                  <th class="px-6 py-4">Qualification ID</th>
+                  <th class="px-6 py-4">Qualification Name</th>
+                  <th class="px-6 py-4">Type</th>
+                  <th class="px-6 py-4">Issuing Organization</th>
+                  <th class="px-6 py-4">Date Obtained</th>
+                  <th class="px-6 py-4">Expiry Date</th>
+                  <th class="px-6 py-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody
+                id="qualification-table-body"
+                class="divide-y divide-gray-100 text-sm"
+              ></tbody>
+            </table>
+          </div>
+
+          <div class="mt-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+              Employee-Qualification Assignments
+            </h2>
+            <div
+              class="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            >
+              <div class="flex gap-4 mb-4">
+                <div class="flex-1">
+                  <label class="block text-sm font-semibold text-gray-700 mb-2"
+                    >Employee ID</label
+                  >
+                  <input
+                    type="number"
+                    id="assign-employee-id"
+                    placeholder="Enter employee ID"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+                </div>
+                <div class="flex-1">
+                  <label class="block text-sm font-semibold text-gray-700 mb-2"
+                    >Qualification ID</label
+                  >
+                  <select
+                    id="assign-qual-id"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  >
+                    <option value="">Select qualification...</option>
+                  </select>
+                </div>
+                <div class="flex items-end">
+                  <button
+                    onclick="assignQualification()"
+                    class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
+                  >
+                    <i class="fas fa-link mr-2"></i> Assign
+                  </button>
+                </div>
+              </div>
+
+              <div class="border-t pt-4">
+                <h3 class="text-lg font-bold text-gray-700 mb-3">
+                  Current Assignments
+                </h3>
+                <div id="assignments-list" class="space-y-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div
+      id="add-modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="toggleModal(false)"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200"
+      >
+        <div
+          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center"
+        >
+          <h3 class="text-xl font-bold text-gray-800">Add Qualification</h3>
+          <button
+            onclick="toggleModal(false)"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="qualification-form" class="p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Qualification Name</label
+              >
+              <input
+                type="text"
+                id="qual_name"
+                placeholder="e.g. Master of Business Administration"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Type</label
+              >
+              <select
+                id="qual_type"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              >
+                <option value="">Select type...</option>
+                <option value="Degree">Degree</option>
+                <option value="Certification">Certification</option>
+                <option value="License">License</option>
+                <option value="Training">Training</option>
+                <option value="Skill">Skill</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Issuing Organization</label
+              >
+              <input
+                type="text"
+                id="issuing_org"
+                placeholder="e.g. Harvard University"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Date Obtained</label
+              >
+              <input
+                type="date"
+                id="date_obtained"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Expiry Date
+                <span class="text-gray-400 text-xs">(Optional)</span></label
+              >
+              <input
+                type="date"
+                id="expiry_date"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-6 mt-6 border-t">
+            <button
+              type="button"
+              onclick="toggleModal(false)"
+              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+            >
+              Save Qualification
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="notification"
+      class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg hidden z-[70] transition-all"
+    ></div>
+
+    <script>
+      fetch("sidebar.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("sidebar-container").innerHTML = html;
+        });
+    </script>
+
+    <script>
+      const API_BASE = "http://localhost/ICT502%20Group%20Project/api";
+      let editingQualId = null;
+      let allQualifications = [];
+      let allAssignments = [];
+
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebar-overlay");
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+
+      function toggleModal(show, qualData = null) {
+        const modal = document.getElementById("add-modal");
+        const form = document.getElementById("qualification-form");
+
+        if (show) {
+          if (qualData) {
+            editingQualId = qualData.QUALIFICATION_ID;
+            document.getElementById("qual_name").value =
+              qualData.QUALIFICATION_NAME;
+            document.getElementById("qual_type").value = qualData.TYPE;
+            document.getElementById("issuing_org").value =
+              qualData.ISSUING_ORGANIZATION;
+            document.getElementById("date_obtained").value =
+              qualData.DATE_OBTAINED?.split("T")[0] || "";
+            document.getElementById("expiry_date").value =
+              qualData.EXPIRY_DATE?.split("T")[0] || "";
+            modal.querySelector("h3").textContent = "Edit Qualification";
+          } else {
+            editingQualId = null;
+            form.reset();
+            modal.querySelector("h3").textContent = "Add Qualification";
+          }
+          modal.classList.remove("hidden");
+        } else {
+          modal.classList.add("hidden");
+        }
+      }
+
+      function showNotification(message, type = "success") {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-[70] transition-all ${
+          type === "success"
+            ? "bg-green-500 text-white"
+            : "bg-red-500 text-white"
+        }`;
+        notification.classList.remove("hidden");
+        setTimeout(() => notification.classList.add("hidden"), 3000);
+      }
+
+      async function loadQualifications() {
+        try {
+          const response = await fetch(`${API_BASE}/qualifications/list.php`);
+          const result = await response.json();
+
+          if (result.success) {
+            allQualifications = result.data;
+            displayQualifications(result.data);
+            updateStats(result.data);
+            populateQualificationDropdown(result.data);
+          } else {
+            showNotification(
+              "Error loading qualifications: " + result.message,
+              "error",
+            );
+          }
+        } catch (error) {
+          showNotification("Failed to load qualifications", "error");
+          console.error(error);
+        }
+      }
+
+      async function loadEmployees() {
+        try {
+          const response = await fetch(`${API_BASE}/employees/list.php`);
+          const result = await response.json();
+
+          if (result.success) {
+            populateEmployeeFilter(result.data);
+          }
+        } catch (error) {
+          console.error("Failed to load employees:", error);
+        }
+      }
+
+      async function loadAssignments() {
+        try {
+          const response = await fetch(`${API_BASE}/employees/list.php`);
+          const result = await response.json();
+
+          if (result.success) {
+            allAssignments = [];
+            for (const emp of result.data) {
+              const qualResponse = await fetch(
+                `${API_BASE}/qualifications/by-employee.php?employee_id=${emp.EMPLOYEE_ID}`,
+              );
+              const qualResult = await qualResponse.json();
+              if (qualResult.success && qualResult.data) {
+                qualResult.data.forEach((qual) => {
+                  allAssignments.push({
+                    employee_id: emp.EMPLOYEE_ID,
+                    employee_name: `${emp.FIRST_NAME} ${emp.LAST_NAME}`,
+                    qualification_id: qual.QUALIFICATION_ID,
+                    qualification_name: qual.QUALIFICATION_NAME,
+                  });
+                });
+              }
+            }
+            displayAssignments(allAssignments);
+          }
+        } catch (error) {
+          console.error("Failed to load assignments:", error);
+        }
+      }
+
+      function displayQualifications(qualifications) {
+        const tableBody = document.getElementById("qualification-table-body");
+        tableBody.innerHTML = "";
+
+        if (!qualifications || qualifications.length === 0) {
+          tableBody.innerHTML =
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No qualifications found</td></tr>';
+          return;
+        }
+
+        qualifications.forEach((qual) => {
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50 transition";
+
+          const expiryDate = qual.EXPIRY_DATE
+            ? qual.EXPIRY_DATE.split("T")[0]
+            : "N/A";
+          const isExpired =
+            qual.EXPIRY_DATE && new Date(qual.EXPIRY_DATE) < new Date();
+
+          row.innerHTML = `
+                    <td class="px-6 py-4 font-mono text-blue-600 font-bold">${qual.QUALIFICATION_ID}</td>
+                    <td class="px-6 py-4 font-semibold text-gray-900">${qual.QUALIFICATION_NAME}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold ${getTypeColor(qual.TYPE)}">
+                            ${qual.TYPE}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">${qual.ISSUING_ORGANIZATION}</td>
+                    <td class="px-6 py-4 text-gray-600">${qual.DATE_OBTAINED?.split("T")[0] || "N/A"}</td>
+                    <td class="px-6 py-4 ${isExpired ? "text-red-600 font-bold" : "text-gray-600"}">
+                        ${expiryDate}
+                    </td>
+                    <td class="px-6 py-4 text-center space-x-3 text-lg">
+                        <button class="text-gray-400 hover:text-blue-600 edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="text-gray-400 hover:text-red-600 delete-btn"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+
+          row
+            .querySelector(".edit-btn")
+            .addEventListener("click", () => editQualification(qual));
+          row
+            .querySelector(".delete-btn")
+            .addEventListener("click", () =>
+              deleteQualification(qual.QUALIFICATION_ID),
+            );
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      function getTypeColor(type) {
+        switch (type) {
+          case "Degree":
+            return "bg-purple-100 text-purple-700";
+          case "Certification":
+            return "bg-blue-100 text-blue-700";
+          case "License":
+            return "bg-green-100 text-green-700";
+          case "Training":
+            return "bg-yellow-100 text-yellow-700";
+          case "Skill":
+            return "bg-orange-100 text-orange-700";
+          default:
+            return "bg-gray-100 text-gray-700";
+        }
+      }
+
+      function updateStats(qualifications) {
+        document.getElementById("total-quals").textContent =
+          qualifications.length;
+
+        const activeCerts = qualifications.filter(
+          (q) =>
+            q.TYPE === "Certification" &&
+            (!q.EXPIRY_DATE || new Date(q.EXPIRY_DATE) >= new Date()),
+        ).length;
+        document.getElementById("active-certs").textContent = activeCerts;
+
+        const uniqueEmployees = new Set(
+          allAssignments.map((a) => a.employee_id),
+        ).size;
+        document.getElementById("qualified-employees").textContent =
+          uniqueEmployees;
+      }
+
+      function populateEmployeeFilter(employees) {
+        const filter = document.getElementById("employee-filter");
+        employees.forEach((emp) => {
+          const option = document.createElement("option");
+          option.value = emp.EMPLOYEE_ID;
+          option.textContent = `${emp.FIRST_NAME} ${emp.LAST_NAME} (ID: ${emp.EMPLOYEE_ID})`;
+          filter.appendChild(option);
+        });
+      }
+
+      function populateQualificationDropdown(qualifications) {
+        const dropdown = document.getElementById("assign-qual-id");
+        dropdown.innerHTML =
+          '<option value="">Select qualification...</option>';
+        qualifications.forEach((qual) => {
+          const option = document.createElement("option");
+          option.value = qual.QUALIFICATION_ID;
+          option.textContent = `${qual.QUALIFICATION_NAME} (${qual.TYPE})`;
+          dropdown.appendChild(option);
+        });
+      }
+
+      function displayAssignments(assignments) {
+        const container = document.getElementById("assignments-list");
+        container.innerHTML = "";
+
+        if (!assignments || assignments.length === 0) {
+          container.innerHTML =
+            '<p class="text-gray-500 text-sm">No assignments found</p>';
+          return;
+        }
+
+        assignments.forEach((assignment) => {
+          const div = document.createElement("div");
+          div.className =
+            "flex items-center justify-between p-3 bg-gray-50 rounded-lg";
+          div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-xs">
+                            ${assignment.employee_id}
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900">${assignment.employee_name}</div>
+                            <div class="text-xs text-gray-500">${assignment.qualification_name}</div>
+                        </div>
+                    </div>
+                    <button onclick="removeAssignment(${assignment.employee_id}, ${assignment.qualification_id})" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+          container.appendChild(div);
+        });
+      }
+
+      function filterQualifications() {
+        const employeeId = document.getElementById("employee-filter").value;
+
+        if (!employeeId) {
+          displayQualifications(allQualifications);
+          return;
+        }
+
+        fetch(
+          `${API_BASE}/qualifications/by-employee.php?employee_id=${employeeId}`,
+        )
+          .then((res) => res.json())
+          .then((result) => {
+            if (result.success) {
+              displayQualifications(result.data);
+            } else {
+              displayQualifications([]);
+            }
+          })
+          .catch((error) => {
+            showNotification("Failed to filter qualifications", "error");
+            console.error(error);
+          });
+      }
+
+      async function assignQualification() {
+        const employeeId = document.getElementById("assign-employee-id").value;
+        const qualificationId = document.getElementById("assign-qual-id").value;
+
+        if (!employeeId || !qualificationId) {
+          showNotification(
+            "Please select both employee and qualification",
+            "error",
+          );
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/qualifications/assign.php`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                employee_id: parseInt(employeeId),
+                qualification_id: parseInt(qualificationId),
+              }),
+            },
+          );
+
+          const result = await response.json();
+
+          if (result.success) {
+            showNotification("Qualification assigned successfully", "success");
+            document.getElementById("assign-employee-id").value = "";
+            document.getElementById("assign-qual-id").value = "";
+            loadAssignments();
+          } else {
+            showNotification("Error: " + result.message, "error");
+          }
+        } catch (error) {
+          showNotification("Failed to assign qualification", "error");
+          console.error(error);
+        }
+      }
+
+      async function removeAssignment(employeeId, qualificationId) {
+        if (!confirm("Are you sure you want to remove this assignment?"))
+          return;
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/qualifications/remove.php`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                employee_id: employeeId,
+                qualification_id: qualificationId,
+              }),
+            },
+          );
+
+          const result = await response.json();
+
+          if (result.success) {
+            showNotification("Assignment removed successfully", "success");
+            loadAssignments();
+          } else {
+            showNotification("Error: " + result.message, "error");
+          }
+        } catch (error) {
+          showNotification("Failed to remove assignment", "error");
+          console.error(error);
+        }
+      }
+
+      function editQualification(qual) {
+        toggleModal(true, qual);
+      }
+
+      async function deleteQualification(id) {
+        if (!confirm("Are you sure you want to delete this qualification?"))
+          return;
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/qualifications/delete.php`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ qualification_id: id }),
+            },
+          );
+
+          const result = await response.json();
+
+          if (result.success) {
+            showNotification("Qualification deleted successfully", "success");
+            loadQualifications();
+          } else {
+            showNotification("Error: " + result.message, "error");
+          }
+        } catch (error) {
+          showNotification("Failed to delete qualification", "error");
+          console.error(error);
+        }
+      }
+
+      document
+        .getElementById("qualification-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            qualification_name: document.getElementById("qual_name").value,
+            type: document.getElementById("qual_type").value,
+            issuing_organization: document.getElementById("issuing_org").value,
+            date_obtained: document.getElementById("date_obtained").value,
+            expiry_date: document.getElementById("expiry_date").value || null,
+          };
+
+          try {
+            let response;
+            if (editingQualId) {
+              formData.qualification_id = editingQualId;
+              response = await fetch(`${API_BASE}/qualifications/update.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+              });
+            } else {
+              response = await fetch(`${API_BASE}/qualifications/create.php`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+              });
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+              showNotification(
+                editingQualId
+                  ? "Qualification updated successfully"
+                  : "Qualification created successfully",
+                "success",
+              );
+              toggleModal(false);
+              loadQualifications();
+            } else {
+              showNotification("Error: " + result.message, "error");
+            }
+          } catch (error) {
+            showNotification("Failed to save qualification", "error");
+            console.error(error);
+          }
+        });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadQualifications();
+        loadEmployees();
+        loadAssignments();
+      });
+    </script>
+  </body>
+</html>

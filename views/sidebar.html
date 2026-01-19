@@ -1,0 +1,121 @@
+<aside
+  id="sidebar"
+  class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform -translate-x-full transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:block min-h-screen border-r border-slate-800"
+>
+  <div class="p-6 mb-4 flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-blue-400 italic tracking-tighter">
+      HR_DB
+    </h2>
+    <button
+      onclick="toggleSidebar()"
+      class="md:hidden text-gray-400 hover:text-white"
+    >
+      <i class="fas fa-times text-2xl"></i>
+    </button>
+  </div>
+
+  <nav class="px-3 space-y-2">
+    <a
+      href="Employees.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-users mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Employees</span>
+    </a>
+
+    <a
+      href="Departments.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-building mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Departments</span>
+    </a>
+
+    <a
+      href="Positions.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-briefcase mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Positions</span>
+    </a>
+
+    <a
+      href="Qualifications.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-graduation-cap mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Qualifications</span>
+    </a>
+
+    <a
+      href="Attendance.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-clock mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Attendance</span>
+    </a>
+
+    <a
+      href="Salary_leave.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-money-bill-wave mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Salary & Leave</span>
+    </a>
+
+    <a
+      href="Evaluation.html"
+      class="nav-link group flex items-center py-3 px-4 rounded-lg text-gray-400 transition-all duration-200"
+    >
+      <i
+        class="fas fa-clipboard-check mr-3 w-5 text-center group-hover:text-blue-400"
+      ></i>
+      <span class="font-medium">Evaluation</span>
+    </a>
+  </nav>
+</aside>
+
+<script>
+  (function setActiveLink() {
+    // Get current filename (e.g., "Employees.html")
+    const currentPath =
+      window.location.pathname.split("/").pop() || "index.html";
+    const links = document.querySelectorAll(".nav-link");
+
+    links.forEach((link) => {
+      const linkHref = link.getAttribute("href");
+
+      if (linkHref === currentPath) {
+        // Static Active Styles: Change background and text permanently for current page
+        link.classList.add(
+          "bg-blue-600/10",
+          "text-blue-400",
+          "border-l-4",
+          "border-blue-500",
+          "pl-3",
+        );
+        link.classList.remove("text-gray-400", "px-4");
+
+        // Make the icon blue too
+        const icon = link.querySelector("i");
+        if (icon) icon.classList.add("text-blue-400");
+      }
+    });
+  })();
+
+  function toggleSidebar() {
+    document.getElementById("sidebar")?.classList.toggle("-translate-x-full");
+  }
+</script>

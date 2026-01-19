@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - HR Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Mobile Header -->
+    <div
+      class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md"
+    >
+      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div
+      id="sidebar-overlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-black/50 z-40 hidden"
+    ></div>
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar Container -->
+      <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
+            <p class="text-gray-500">Welcome to HR Management System</p>
+          </div>
+
+          <!-- Quick Stats -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <div
+              class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-2xl shadow-lg text-white"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-blue-100 text-sm font-medium mb-1">
+                    Total Employees
+                  </p>
+                  <h2 id="total-employees" class="text-3xl font-bold">0</h2>
+                </div>
+                <div
+                  class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"
+                >
+                  <i class="fas fa-users text-2xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-2xl shadow-lg text-white"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-green-100 text-sm font-medium mb-1">
+                    Departments
+                  </p>
+                  <h2 id="total-departments" class="text-3xl font-bold">0</h2>
+                </div>
+                <div
+                  class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"
+                >
+                  <i class="fas fa-sitemap text-2xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-2xl shadow-lg text-white"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-purple-100 text-sm font-medium mb-1">
+                    Positions
+                  </p>
+                  <h2 id="total-positions" class="text-3xl font-bold">0</h2>
+                </div>
+                <div
+                  class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"
+                >
+                  <i class="fas fa-briefcase text-2xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-2xl shadow-lg text-white"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-orange-100 text-sm font-medium mb-1">
+                    Pending Leaves
+                  </p>
+                  <h2 id="pending-leaves" class="text-3xl font-bold">0</h2>
+                </div>
+                <div
+                  class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"
+                >
+                  <i class="fas fa-calendar-times text-2xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Grid -->
+          <div class="mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <a
+                href="employees.html"
+                class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-blue-300 transition text-center group"
+              >
+                <div
+                  class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition"
+                >
+                  <i class="fas fa-user-plus text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Add Employee</h3>
+              </a>
+
+              <a
+                href="attendance.html"
+                class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-green-300 transition text-center group"
+              >
+                <div
+                  class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition"
+                >
+                  <i class="fas fa-clock text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Mark Attendance</h3>
+              </a>
+
+              <a
+                href="leave.html"
+                class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-purple-300 transition text-center group"
+              >
+                <div
+                  class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition"
+                >
+                  <i class="fas fa-calendar-plus text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Request Leave</h3>
+              </a>
+
+              <a
+                href="payroll.html"
+                class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-yellow-300 transition text-center group"
+              >
+                <div
+                  class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition"
+                >
+                  <i class="fas fa-dollar-sign text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Process Payroll</h3>
+              </a>
+            </div>
+          </div>
+
+          <!-- Recent Activity & Modules -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <!-- Recent Attendance -->
+            <div
+              class="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-gray-800">
+                  Today's Attendance
+                </h2>
+                <a
+                  href="attendance.html"
+                  class="text-blue-600 hover:text-blue-700 text-sm font-semibold"
+                  >View All →</a
+                >
+              </div>
+              <div id="recent-attendance" class="space-y-3">
+                <p class="text-gray-500 text-sm text-center py-4">Loading...</p>
+              </div>
+            </div>
+
+            <!-- All Modules -->
+            <div
+              class="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+            >
+              <h2 class="text-lg font-bold text-gray-800 mb-4">All Modules</h2>
+              <div class="grid grid-cols-2 gap-3">
+                <a
+                  href="employees.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-users text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Employees</span
+                  >
+                </a>
+                <a
+                  href="departments.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-sitemap text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Departments</span
+                  >
+                </a>
+                <a
+                  href="positions.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-briefcase text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Positions</span
+                  >
+                </a>
+                <a
+                  href="qualifications.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-certificate text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Qualifications</span
+                  >
+                </a>
+                <a
+                  href="attendance.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-calendar-check text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Attendance</span
+                  >
+                </a>
+                <a
+                  href="payroll.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-dollar-sign text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Payroll</span
+                  >
+                </a>
+                <a
+                  href="leave.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-calendar-alt text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700">Leave</span>
+                </a>
+                <a
+                  href="evaluation.html"
+                  class="flex items-center p-3 rounded-lg bg-gray-50 hover:bg-blue-50 transition"
+                >
+                  <i class="fas fa-star text-blue-600 mr-3"></i>
+                  <span class="text-sm font-semibold text-gray-700"
+                    >Evaluation</span
+                  >
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="hidden"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+      // Load dashboard stats
+      async function loadDashboardStats() {
+        try {
+          // Load employees count
+          const empResult = await Utils.apiCall("/employees/list.php");
+          if (empResult.success && empResult.data) {
+            document.getElementById("total-employees").textContent =
+              empResult.data.length;
+          }
+
+          // Load departments count
+          const deptResult = await Utils.apiCall("/departments/list.php");
+          if (deptResult.success && deptResult.data) {
+            document.getElementById("total-departments").textContent =
+              deptResult.data.length;
+          }
+
+          // Load positions count
+          const posResult = await Utils.apiCall("/positions/list.php");
+          if (posResult.success && posResult.data) {
+            document.getElementById("total-positions").textContent =
+              posResult.data.length;
+          }
+
+          // Load pending leaves count
+          const leaveResult = await Utils.apiCall("/leave/list.php");
+          if (leaveResult.success && leaveResult.data) {
+            const pending = leaveResult.data.filter(
+              (l) => l.STATUS === "PENDING",
+            ).length;
+            document.getElementById("pending-leaves").textContent = pending;
+          }
+        } catch (error) {
+          console.error("Failed to load dashboard stats:", error);
+        }
+      }
+
+      // Load today's attendance
+      async function loadTodayAttendance() {
+        try {
+          const result = await Utils.apiCall("/attendance/list.php");
+          const container = document.getElementById("recent-attendance");
+
+          if (result.success && result.data) {
+            const today = new Date().toISOString().split("T")[0];
+            const todayAttendance = result.data
+              .filter((att) => att.ATTENDANCE_DATE === today)
+              .slice(0, 5);
+
+            if (todayAttendance.length === 0) {
+              container.innerHTML =
+                '<p class="text-gray-500 text-sm text-center py-4">No attendance records today</p>';
+              return;
+            }
+
+            container.innerHTML = todayAttendance
+              .map(
+                (att) => `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-xs font-bold">
+                                    ${att.FIRST_NAME[0]}${att.LAST_NAME[0]}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-semibold text-gray-900">${att.FIRST_NAME} ${att.LAST_NAME}</div>
+                                    <div class="text-xs text-gray-500">In: ${att.CHECK_IN_TIME}</div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs rounded-full ${att.CHECK_OUT_TIME ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}">
+                                ${att.CHECK_OUT_TIME ? "Out: " + att.CHECK_OUT_TIME : "Active"}
+                            </span>
+                        </div>
+                    `,
+              )
+              .join("");
+          } else {
+            container.innerHTML =
+              '<p class="text-gray-500 text-sm text-center py-4">No data available</p>';
+          }
+        } catch (error) {
+          console.error("Failed to load attendance:", error);
+          document.getElementById("recent-attendance").innerHTML =
+            '<p class="text-red-500 text-sm text-center py-4">Error loading data</p>';
+        }
+      }
+
+      // Load on page ready
+      document.addEventListener("DOMContentLoaded", () => {
+        loadDashboardStats();
+        loadTodayAttendance();
+      });
+    </script>
+  </body>
+</html>

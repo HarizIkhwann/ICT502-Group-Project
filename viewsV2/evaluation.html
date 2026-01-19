@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Performance Evaluation - HR Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Mobile Header -->
+    <div
+      class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md"
+    >
+      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div
+      id="sidebar-overlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-black/50 z-40 hidden"
+    ></div>
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar Container -->
+      <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+          <!-- Header -->
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+          >
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800">
+                Performance Evaluation
+              </h1>
+              <p class="text-gray-500 text-sm">
+                Track and assess employee performance
+              </p>
+            </div>
+            <button
+              onclick="openModal()"
+              class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg shadow-lg flex items-center justify-center font-semibold transition"
+            >
+              <i class="fas fa-star mr-2"></i> Add Evaluation
+            </button>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-clipboard-check text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Total Evaluations
+                  </p>
+                  <h2 id="total-evals" class="text-2xl font-bold text-gray-900">
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-hourglass-half text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    In Progress
+                  </p>
+                  <h2 id="in-progress" class="text-2xl font-bold text-gray-900">
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-check-circle text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Completed
+                  </p>
+                  <h2 id="completed" class="text-2xl font-bold text-gray-900">
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-star text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Avg Score
+                  </p>
+                  <h2 id="avg-score" class="text-2xl font-bold text-gray-900">
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div
+            class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6"
+          >
+            <div class="flex flex-wrap gap-4">
+              <select
+                id="employee-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">All Employees</option>
+              </select>
+              <select
+                id="status-filter"
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">All Statuses</option>
+                <option value="IN PROGRESS">In Progress</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+              <button
+                onclick="filterEvaluations()"
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+              >
+                <i class="fas fa-filter mr-2"></i> Filter
+              </button>
+              <button
+                onclick="resetFilter()"
+                class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold"
+              >
+                <i class="fas fa-redo mr-2"></i> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Evaluations Table -->
+          <div
+            class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto"
+          >
+            <table class="w-full text-left">
+              <thead
+                class="bg-gray-50 border-b border-gray-200 text-gray-600 text-xs uppercase font-bold tracking-wider"
+              >
+                <tr>
+                  <th class="px-6 py-4">Employee</th>
+                  <th class="px-6 py-4">Evaluation Date</th>
+                  <th class="px-6 py-4">Score</th>
+                  <th class="px-6 py-4">Rating</th>
+                  <th class="px-6 py-4">Comments</th>
+                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="divide-y divide-gray-100 text-sm">
+                <tr>
+                  <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                    Loading...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+      >
+        <div
+          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center sticky top-0"
+        >
+          <h3 id="modal-title" class="text-xl font-bold text-gray-800">
+            Add Evaluation
+          </h3>
+          <button
+            onclick="closeModal()"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="eval-form" class="p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Employee</label
+              >
+              <select
+                id="employee_id"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">Select Employee</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Evaluation Date</label
+              >
+              <input
+                type="date"
+                id="evaluation_date"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Performance Score (1-10)</label
+              >
+              <input
+                type="number"
+                id="score"
+                required
+                min="1"
+                max="10"
+                step="0.1"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Poor</span>
+                <span>Average</span>
+                <span>Excellent</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Comments</label
+              >
+              <textarea
+                id="comments"
+                required
+                rows="4"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Provide detailed feedback on performance"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-3"
+                >Status</label
+              >
+              <div class="flex gap-6">
+                <label class="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="status"
+                    value="IN PROGRESS"
+                    checked
+                    class="mr-2"
+                  />
+                  <span>In Progress</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="status"
+                    value="COMPLETED"
+                    class="mr-2"
+                  />
+                  <span>Completed</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-6 mt-6 border-t">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="hidden"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+      let editingId = null;
+      let allEvaluations = [];
+
+      // Set today's date as default
+      document.getElementById("evaluation_date").valueAsDate = new Date();
+
+      // Open modal
+      function openModal(evaluation = null) {
+        const modal = document.getElementById("modal");
+        const form = document.getElementById("eval-form");
+        const title = document.getElementById("modal-title");
+
+        if (evaluation) {
+          editingId = evaluation.EVALUATION_ID;
+          document.getElementById("employee_id").value = evaluation.EMPLOYEE_ID;
+          document.getElementById("evaluation_date").value =
+            evaluation.EVALUATION_DATE;
+          document.getElementById("score").value = evaluation.SCORE;
+          document.getElementById("comments").value = evaluation.COMMENTS;
+          document.querySelector(
+            `input[name="status"][value="${evaluation.STATUS}"]`,
+          ).checked = true;
+          title.textContent = "Edit Evaluation";
+        } else {
+          editingId = null;
+          form.reset();
+          document.getElementById("evaluation_date").valueAsDate = new Date();
+          title.textContent = "Add Evaluation";
+        }
+        modal.classList.remove("hidden");
+      }
+
+      // Close modal
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+      }
+
+      // Load employees
+      async function loadEmployees() {
+        try {
+          const result = await Utils.apiCall("/employees/list.php");
+          if (result.success && result.data) {
+            const select = document.getElementById("employee_id");
+            const filter = document.getElementById("employee-filter");
+
+            result.data.forEach((emp) => {
+              const option = `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
+              select.innerHTML += option;
+              filter.innerHTML += option;
+            });
+          }
+        } catch (error) {
+          console.error("Failed to load employees:", error);
+        }
+      }
+
+      // Load evaluations
+      async function loadEvaluations() {
+        try {
+          const result = await Utils.apiCall(
+            "/performance-evaluation/list.php",
+          );
+
+          if (result.success && result.data) {
+            allEvaluations = result.data;
+            displayEvaluations(result.data);
+            updateStats(result.data);
+          } else {
+            throw new Error(result.message || "Failed to load evaluations");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to load evaluations: " + error.message,
+            "error",
+          );
+          document.getElementById("table-body").innerHTML =
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
+        }
+      }
+
+      // Filter evaluations
+      function filterEvaluations() {
+        const employeeFilter = document.getElementById("employee-filter").value;
+        const statusFilter = document.getElementById("status-filter").value;
+        let filtered = allEvaluations;
+
+        if (employeeFilter) {
+          filtered = filtered.filter(
+            (eval) => eval.EMPLOYEE_ID == employeeFilter,
+          );
+        }
+
+        if (statusFilter) {
+          filtered = filtered.filter((eval) => eval.STATUS === statusFilter);
+        }
+
+        displayEvaluations(filtered);
+      }
+
+      // Reset filter
+      function resetFilter() {
+        document.getElementById("employee-filter").value = "";
+        document.getElementById("status-filter").value = "";
+        displayEvaluations(allEvaluations);
+      }
+
+      // Get rating based on score
+      function getRating(score) {
+        const s = parseFloat(score);
+        if (s >= 9)
+          return { text: "Excellent", color: "text-green-600 bg-green-50" };
+        if (s >= 7) return { text: "Good", color: "text-blue-600 bg-blue-50" };
+        if (s >= 5)
+          return { text: "Average", color: "text-yellow-600 bg-yellow-50" };
+        return { text: "Needs Improvement", color: "text-red-600 bg-red-50" };
+      }
+
+      // Display evaluations
+      function displayEvaluations(evaluations) {
+        const tbody = document.getElementById("table-body");
+
+        if (!evaluations || evaluations.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No evaluations found</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = evaluations
+          .map((eval) => {
+            const rating = getRating(eval.SCORE);
+            const statusClass =
+              eval.STATUS === "COMPLETED"
+                ? "bg-green-100 text-green-700"
+                : "bg-yellow-100 text-yellow-700";
+
+            return `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center mr-3 font-bold text-sm">
+                                ${eval.FIRST_NAME[0]}${eval.LAST_NAME[0]}
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900">${eval.FIRST_NAME} ${eval.LAST_NAME}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-gray-700">${Utils.formatDate(eval.EVALUATION_DATE)}</td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full border-4 ${rating.color} border flex items-center justify-center mr-2">
+                                <span class="text-lg font-bold">${eval.SCORE}</span>
+                            </div>
+                            <span class="text-xs text-gray-500">/10</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full font-semibold ${rating.color} border">${rating.text}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="max-w-xs truncate text-gray-600" title="${eval.COMMENTS}">${eval.COMMENTS}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusClass}">${eval.STATUS}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center space-x-3 text-lg">
+                        ${
+                          eval.STATUS === "IN PROGRESS"
+                            ? `
+                            <button onclick="completeEvaluation(${eval.EVALUATION_ID})" class="text-gray-400 hover:text-green-600" title="Mark as Completed">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                        `
+                            : ""
+                        }
+                        <button onclick='editEvaluation(${JSON.stringify(eval)})' class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteEvaluation(${eval.EVALUATION_ID})" class="text-gray-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+          })
+          .join("");
+      }
+
+      // Update stats
+      function updateStats(evaluations) {
+        document.getElementById("total-evals").textContent = evaluations.length;
+
+        const inProgress = evaluations.filter(
+          (e) => e.STATUS === "IN PROGRESS",
+        ).length;
+        const completed = evaluations.filter(
+          (e) => e.STATUS === "COMPLETED",
+        ).length;
+
+        document.getElementById("in-progress").textContent = inProgress;
+        document.getElementById("completed").textContent = completed;
+
+        if (evaluations.length > 0) {
+          const avgScore =
+            evaluations.reduce((sum, e) => sum + parseFloat(e.SCORE), 0) /
+            evaluations.length;
+          document.getElementById("avg-score").textContent =
+            avgScore.toFixed(1);
+        } else {
+          document.getElementById("avg-score").textContent = "0";
+        }
+      }
+
+      // Edit evaluation
+      function editEvaluation(eval) {
+        openModal(eval);
+      }
+
+      // Complete evaluation
+      async function completeEvaluation(id) {
+        if (!confirm("Mark this evaluation as completed?")) return;
+
+        try {
+          const result = await Utils.apiCall(
+            "/performance-evaluation/update-status.php",
+            {
+              method: "POST",
+              body: JSON.stringify({ evaluation_id: id, status: "COMPLETED" }),
+            },
+          );
+
+          if (result.success) {
+            Utils.showNotification("Evaluation marked as completed");
+            loadEvaluations();
+          } else {
+            throw new Error(result.message || "Failed to update status");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to update status: " + error.message,
+            "error",
+          );
+        }
+      }
+
+      // Delete evaluation
+      async function deleteEvaluation(id) {
+        if (!confirm("Are you sure you want to delete this evaluation?"))
+          return;
+
+        try {
+          const result = await Utils.apiCall(
+            "/performance-evaluation/delete.php",
+            {
+              method: "POST",
+              body: JSON.stringify({ evaluation_id: id }),
+            },
+          );
+
+          if (result.success) {
+            Utils.showNotification("Evaluation deleted successfully");
+            loadEvaluations();
+          } else {
+            throw new Error(result.message || "Failed to delete");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to delete evaluation: " + error.message,
+            "error",
+          );
+        }
+      }
+
+      // Form submission
+      document
+        .getElementById("eval-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const score = parseFloat(document.getElementById("score").value);
+          if (score < 1 || score > 10) {
+            Utils.showNotification("Score must be between 1 and 10", "error");
+            return;
+          }
+
+          const formData = {
+            employee_id: parseInt(document.getElementById("employee_id").value),
+            evaluation_date: document.getElementById("evaluation_date").value,
+            score: score,
+            comments: document.getElementById("comments").value,
+            status: document.querySelector('input[name="status"]:checked')
+              .value,
+          };
+
+          if (editingId) {
+            formData.evaluation_id = editingId;
+          }
+
+          try {
+            const endpoint = editingId
+              ? "/performance-evaluation/update.php"
+              : "/performance-evaluation/create.php";
+            const result = await Utils.apiCall(endpoint, {
+              method: "POST",
+              body: JSON.stringify(formData),
+            });
+
+            if (result.success) {
+              Utils.showNotification(
+                editingId
+                  ? "Evaluation updated successfully"
+                  : "Evaluation created successfully",
+              );
+              closeModal();
+              loadEvaluations();
+            } else {
+              throw new Error(result.message || "Operation failed");
+            }
+          } catch (error) {
+            Utils.showNotification(
+              "Failed to save evaluation: " + error.message,
+              "error",
+            );
+          }
+        });
+
+      // Load on page ready
+      document.addEventListener("DOMContentLoaded", () => {
+        loadEmployees();
+        loadEvaluations();
+      });
+    </script>
+  </body>
+</html>

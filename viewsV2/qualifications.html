@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qualifications - HR Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <!-- Mobile Header -->
+    <div
+      class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md"
+    >
+      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div
+      id="sidebar-overlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-black/50 z-40 hidden"
+    ></div>
+
+    <div class="flex min-h-screen">
+      <!-- Sidebar Container -->
+      <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+          <!-- Header -->
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4"
+          >
+            <div>
+              <h1 class="text-3xl font-bold text-gray-800">
+                Qualification Management
+              </h1>
+              <p class="text-gray-500 text-sm">
+                Manage certifications and skills
+              </p>
+            </div>
+            <button
+              onclick="openModal()"
+              class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg shadow-lg flex items-center justify-center font-semibold transition"
+            >
+              <i class="fas fa-certificate mr-2"></i> Add Qualification
+            </button>
+          </div>
+
+          <!-- Stats Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-certificate text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Total Qualifications
+                  </p>
+                  <h2 id="total-quals" class="text-2xl font-bold text-gray-900">
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
+            >
+              <div class="flex items-center">
+                <div
+                  class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4"
+                >
+                  <i class="fas fa-user-graduate text-xl"></i>
+                </div>
+                <div>
+                  <p
+                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
+                  >
+                    Total Assignments
+                  </p>
+                  <h2
+                    id="total-assignments"
+                    class="text-2xl font-bold text-gray-900"
+                  >
+                    0
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Qualifications List -->
+          <div class="grid gap-4" id="quals-container">
+            <div class="text-center py-8 text-gray-500">Loading...</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Qualification Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
+      >
+        <div
+          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center"
+        >
+          <h3 id="modal-title" class="text-xl font-bold text-gray-800">
+            Add Qualification
+          </h3>
+          <button
+            onclick="closeModal()"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="qual-form" class="p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Qualification Name</label
+              >
+              <input
+                type="text"
+                id="qual_name"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="e.g., AWS Solutions Architect"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Description</label
+              >
+              <textarea
+                id="description"
+                rows="3"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Brief description of qualification"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-6 mt-6 border-t">
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Assign Modal -->
+    <div
+      id="assign-modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeAssignModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
+      >
+        <div
+          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center"
+        >
+          <h3 class="text-xl font-bold text-gray-800">Assign to Employee</h3>
+          <button
+            onclick="closeAssignModal()"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <form id="assign-form" class="p-6">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Select Employee</label
+              >
+              <select
+                id="employee_id"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">Choose an employee</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Date Obtained</label
+              >
+              <input
+                type="date"
+                id="date_obtained"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-6 mt-6 border-t">
+            <button
+              type="button"
+              onclick="closeAssignModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+            >
+              Assign
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="hidden"></div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script>
+      let editingId = null;
+      let assigningQualId = null;
+
+      // Open qualification modal
+      function openModal(qual = null) {
+        const modal = document.getElementById("modal");
+        const form = document.getElementById("qual-form");
+        const title = document.getElementById("modal-title");
+
+        if (qual) {
+          editingId = qual.QUALIFICATION_ID;
+          document.getElementById("qual_name").value = qual.QUALIFICATION_NAME;
+          document.getElementById("description").value = qual.DESCRIPTION || "";
+          title.textContent = "Edit Qualification";
+        } else {
+          editingId = null;
+          form.reset();
+          title.textContent = "Add Qualification";
+        }
+        modal.classList.remove("hidden");
+      }
+
+      // Close qualification modal
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+      }
+
+      // Open assign modal
+      async function openAssignModal(qualId) {
+        assigningQualId = qualId;
+        document.getElementById("assign-form").reset();
+        document.getElementById("assign-modal").classList.remove("hidden");
+      }
+
+      // Close assign modal
+      function closeAssignModal() {
+        document.getElementById("assign-modal").classList.add("hidden");
+      }
+
+      // Load employees for assignment
+      async function loadEmployees() {
+        try {
+          const result = await Utils.apiCall("/employees/list.php");
+          if (result.success && result.data) {
+            const select = document.getElementById("employee_id");
+            select.innerHTML = '<option value="">Choose an employee</option>';
+            result.data.forEach((emp) => {
+              select.innerHTML += `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
+            });
+          }
+        } catch (error) {
+          console.error("Failed to load employees:", error);
+        }
+      }
+
+      // Load qualifications
+      async function loadQualifications() {
+        try {
+          const result = await Utils.apiCall("/qualifications/list.php");
+
+          if (result.success && result.data) {
+            displayQualifications(result.data);
+            updateStats(result.data);
+          } else {
+            throw new Error(result.message || "Failed to load qualifications");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to load qualifications: " + error.message,
+            "error",
+          );
+          document.getElementById("quals-container").innerHTML =
+            '<div class="text-center py-8 text-red-500">Error loading data</div>';
+        }
+      }
+
+      // Display qualifications
+      async function displayQualifications(qualifications) {
+        const container = document.getElementById("quals-container");
+
+        if (!qualifications || qualifications.length === 0) {
+          container.innerHTML =
+            '<div class="text-center py-8 text-gray-500">No qualifications found</div>';
+          return;
+        }
+
+        // For each qualification, get assignments
+        const qualsWithAssignments = await Promise.all(
+          qualifications.map(async (qual) => {
+            try {
+              const result = await Utils.apiCall(
+                `/qualifications/by-employee.php?qualification_id=${qual.QUALIFICATION_ID}`,
+              );
+              return {
+                ...qual,
+                assignments: result.success && result.data ? result.data : [],
+              };
+            } catch {
+              return { ...qual, assignments: [] };
+            }
+          }),
+        );
+
+        container.innerHTML = qualsWithAssignments
+          .map(
+            (qual) => `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                        <div class="flex items-center mb-3 md:mb-0">
+                            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-certificate text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">${qual.QUALIFICATION_NAME}</h3>
+                                <p class="text-sm text-gray-500">${qual.DESCRIPTION || "No description"}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openAssignModal(${qual.QUALIFICATION_ID})" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold">
+                                <i class="fas fa-user-plus mr-1"></i> Assign
+                            </button>
+                            <button onclick='editQual(${JSON.stringify(qual)})' class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteQual(${qual.QUALIFICATION_ID})" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    ${
+                      qual.assignments.length > 0
+                        ? `
+                        <div class="border-t pt-4 mt-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3">Assigned to ${qual.assignments.length} employee(s):</h4>
+                            <div class="grid md:grid-cols-2 gap-3">
+                                ${qual.assignments
+                                  .map(
+                                    (assign) => `
+                                    <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                                        <div class="flex items-center">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-xs font-bold">
+                                                ${assign.FIRST_NAME[0]}${assign.LAST_NAME[0]}
+                                            </div>
+                                            <div>
+                                                <div class="text-sm font-semibold text-gray-900">${assign.FIRST_NAME} ${assign.LAST_NAME}</div>
+                                                <div class="text-xs text-gray-500">Obtained: ${Utils.formatDate(assign.DATE_OBTAINED)}</div>
+                                            </div>
+                                        </div>
+                                        <button onclick="removeAssignment(${qual.QUALIFICATION_ID}, ${assign.EMPLOYEE_ID})" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                `,
+                                  )
+                                  .join("")}
+                            </div>
+                        </div>
+                    `
+                        : '<div class="text-sm text-gray-500 italic border-t pt-4 mt-4">No employees assigned yet</div>'
+                    }
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // Update stats
+      function updateStats(qualifications) {
+        document.getElementById("total-quals").textContent =
+          qualifications.length;
+        // Count assignments would require API call - simplified for now
+        const totalAssignments = qualifications.reduce(
+          (sum, q) => sum + (q.assignments?.length || 0),
+          0,
+        );
+        document.getElementById("total-assignments").textContent =
+          totalAssignments;
+      }
+
+      // Edit qualification
+      function editQual(qual) {
+        openModal(qual);
+      }
+
+      // Delete qualification
+      async function deleteQual(id) {
+        if (!confirm("Are you sure you want to delete this qualification?"))
+          return;
+
+        try {
+          const result = await Utils.apiCall("/qualifications/delete.php", {
+            method: "POST",
+            body: JSON.stringify({ qualification_id: id }),
+          });
+
+          if (result.success) {
+            Utils.showNotification("Qualification deleted successfully");
+            loadQualifications();
+          } else {
+            throw new Error(result.message || "Failed to delete");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to delete qualification: " + error.message,
+            "error",
+          );
+        }
+      }
+
+      // Remove assignment
+      async function removeAssignment(qualId, empId) {
+        if (!confirm("Remove this qualification from employee?")) return;
+
+        try {
+          const result = await Utils.apiCall("/qualifications/remove.php", {
+            method: "POST",
+            body: JSON.stringify({
+              qualification_id: qualId,
+              employee_id: empId,
+            }),
+          });
+
+          if (result.success) {
+            Utils.showNotification("Assignment removed successfully");
+            loadQualifications();
+          } else {
+            throw new Error(result.message || "Failed to remove assignment");
+          }
+        } catch (error) {
+          Utils.showNotification(
+            "Failed to remove assignment: " + error.message,
+            "error",
+          );
+        }
+      }
+
+      // Qualification form submission
+      document
+        .getElementById("qual-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            qualification_name: document.getElementById("qual_name").value,
+            description: document.getElementById("description").value,
+          };
+
+          if (editingId) {
+            formData.qualification_id = editingId;
+          }
+
+          try {
+            const endpoint = editingId
+              ? "/qualifications/update.php"
+              : "/qualifications/create.php";
+            const result = await Utils.apiCall(endpoint, {
+              method: "POST",
+              body: JSON.stringify(formData),
+            });
+
+            if (result.success) {
+              Utils.showNotification(
+                editingId
+                  ? "Qualification updated successfully"
+                  : "Qualification created successfully",
+              );
+              closeModal();
+              loadQualifications();
+            } else {
+              throw new Error(result.message || "Operation failed");
+            }
+          } catch (error) {
+            Utils.showNotification(
+              "Failed to save qualification: " + error.message,
+              "error",
+            );
+          }
+        });
+
+      // Assignment form submission
+      document
+        .getElementById("assign-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = {
+            qualification_id: assigningQualId,
+            employee_id: parseInt(document.getElementById("employee_id").value),
+            date_obtained: document.getElementById("date_obtained").value,
+          };
+
+          try {
+            const result = await Utils.apiCall("/qualifications/assign.php", {
+              method: "POST",
+              body: JSON.stringify(formData),
+            });
+
+            if (result.success) {
+              Utils.showNotification("Qualification assigned successfully");
+              closeAssignModal();
+              loadQualifications();
+            } else {
+              throw new Error(result.message || "Failed to assign");
+            }
+          } catch (error) {
+            Utils.showNotification(
+              "Failed to assign qualification: " + error.message,
+              "error",
+            );
+          }
+        });
+
+      // Load on page ready
+      document.addEventListener("DOMContentLoaded", () => {
+        loadEmployees();
+        loadQualifications();
+      });
+    </script>
+  </body>
+</html>

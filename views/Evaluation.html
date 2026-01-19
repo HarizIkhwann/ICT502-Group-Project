@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR System - Performance Evaluation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+        <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity"></div>
+
+    <div class="flex min-h-screen">
+
+        <div id="sidebar-container" class="md:w-64 bg-slate-900"></div>
+
+        <main class="flex-1 p-6 max-w-7xl mx-auto space-y-8">
+
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">📈 Performance Evaluations</h1>
+                    <p class="text-gray-500 text-sm">Track and manage employee growth and performance scores.</p>
+                </div>
+                <button onclick="toggleEvalModal()" 
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 shadow-md">
+                    <i class="fas fa-plus"></i> New Evaluation
+                </button>
+            </div>
+
+            <section>
+                <div class="bg-white rounded-xl shadow border overflow-x-auto">
+                    <table class="w-full min-w-[1000px] text-left">
+                        <thead class="bg-gray-50 text-xs uppercase font-bold text-gray-600 border-b">
+                            <tr>
+                                <th class="px-6 py-4">Eval ID</th>
+                                <th class="px-6 py-4">Employee ID</th>
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4">Score</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Strengths</th>
+                                <th class="px-6 py-4">Weaknesses</th>
+                                <th class="px-6 py-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evaluation-table-body" class="divide-y text-sm text-gray-700">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="evalModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
+                <h3 class="text-lg font-bold">New Performance Review</h3>
+                <button onclick="toggleEvalModal()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+            </div>
+
+            <form class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Employee ID</label>
+                        <input type="text" placeholder="EMP-XXX" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Evaluation Date</label>
+                        <input type="date" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Score (0-100)</label>
+                        <input type="number" min="0" max="100" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                    </div>
+                    <div>id="eval_employee_id" 
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Status</label>
+                        <select class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                            <option>Draft</option>
+                            <option>In Progid="eval_date" ress</option>
+                            <option>Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-id="eval_score" gray-500 uppercase mb-1">Strengths</label>
+                    <textarea id="eval_strengths" rows="2" placeholder="What did the employee do well?" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Weaknesses</label>
+                    <textarea id="eval_weaknesses" rows="2" placeholder="Areas for improvement..." class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-4 border-t">
+                    <button type="button" onclick="toggleEvalModal()" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium transition">Cancel</button>
+                    <button type="submit" class="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md transition">Save Evaluation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg hidden z-[70] transition-all"></div>
+
+    <script>
+        // Inject Sidebar
+        fetch("sidebar.html")
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("sidebar-container").innerHTML = html;
+            });
+
+        const API_BASE = 'http://localhost/ICT502%20Group%20Project/api';
+        let editingEvalId = null;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar?.classList.toggle('-translate-x-full');
+            overlay?.classList.toggle('hidden');
+        }
+
+        // Toggle Modal
+        function toggleEvalModal(show, evalData = null) {
+            const modal = document.getElementById('evalModal');
+            const form = modal.querySelector('form');
+
+            if (show) {
+                if (evalData) {
+                    editingEvalId = evalData.EVALUATION_ID;
+                    document.getElementById('eval_employee_id').value = evalData.EMPLOYEE_ID;
+                    document.getElementById('eval_date').value = evalData.EVALUATION_DATE?.split('T')[0] || '';
+                    document.getElementById('eval_score').value = evalData.PERFORMANCE_SCORE;
+                    document.getElementById('eval_status').value = evalData.STATUS;
+                    document.getElementById('eval_strengths').value = evalData.STRENGTHS || '';
+                    document.getElementById('eval_weaknesses').value = evalData.WEAKNESSES || '';
+                    modal.querySelector('h3').textContent = 'Edit Performance Review';
+                } else {
+                    editingEvalId = null;
+                    form.reset();
+                    modal.querySelector('h3').textContent = 'New Performance Review';
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-[70] transition-all ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            notification.classList.remove('hidden');
+            setTimeout(() => notification.classList.add('hidden'), 3000);
+        }
+
+        async function loadEvaluations() {
+            try {
+                const response = await fetch(`${API_BASE}/performance-evaluation/list.php`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayEvaluations(result.data);
+                } else {
+                    showNotification('Error loading evaluations: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Failed to load evaluations', 'error');
+                console.error(error);
+            }
+        }
+
+        function displayEvaluations(evaluations) {
+            const tableBody = document.getElementById('evaluation-table-body');
+            tableBody.innerHTML = '';
+
+            if (!evaluations || evaluations.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No evaluations found</td></tr>';
+                return;
+            }
+
+            evaluations.forEach(eval => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50 transition';
+
+                const statusColor = getStatusColor(eval.STATUS);
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-mono font-bold text-blue-600">${eval.EVALUATION_ID}</td>
+                    <td class="px-6 py-4 font-mono">${eval.EMPLOYEE_ID}</td>
+                    <td class="px-6 py-4 text-gray-500">${eval.EVALUATION_DATE?.split('T')[0] || 'N/A'}</td>
+                    <td class="px-6 py-4">
+                        <span class="font-bold text-lg">${eval.PERFORMANCE_SCORE}</span><span class="text-gray-400">/100</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 text-xs rounded-full ${statusColor} font-medium">${eval.STATUS}</span>
+                    </td>
+                    <td class="px-6 py-4 max-w-xs truncate" title="${eval.STRENGTHS || ''}">${eval.STRENGTHS || '-'}</td>
+                    <td class="px-6 py-4 max-w-xs truncate" title="${eval.WEAKNESSES || ''}">${eval.WEAKNESSES || '-'}</td>
+                    <td class="px-6 py-4 text-center space-x-3 text-lg">
+                        <button class="text-gray-400 hover:text-blue-600 edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="text-gray-400 hover:text-red-600 delete-btn"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+
+                row.querySelector('.edit-btn').addEventListener('click', () => editEvaluation(eval));
+                row.querySelector('.delete-btn').addEventListener('click', () => deleteEvaluation(eval.EVALUATION_ID));
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Completed': return 'bg-green-100 text-green-700';
+                case 'In Progress': return 'bg-blue-100 text-blue-700';
+                case 'Draft': return 'bg-gray-100 text-gray-700';
+                default: return 'bg-gray-100 text-gray-700';
+            }
+        }
+
+        function editEvaluation(eval) {
+            toggleEvalModal(true, eval);
+        }
+
+        async function deleteEvaluation(id) {
+            if (!confirm('Are you sure you want to delete this evaluation?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/performance-evaluation/delete.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ evaluation_id: id })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('Evaluation deleted successfully', 'success');
+                    loadEvaluations();
+                } else {
+                    showNotification('Error: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Failed to delete evaluation', 'error');
+                console.error(error);
+            }
+        }
+
+        document.querySelector('#evalModal form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                employee_id: parseInt(document.getElementById('eval_employee_id').value),
+                evaluation_date: document.getElementById('eval_date').value,
+                performance_score: parseInt(document.getElementById('eval_score').value),
+                status: document.getElementById('eval_status').value,
+                strengths: document.getElementById('eval_strengths').value || null,
+                weaknesses: document.getElementById('eval_weaknesses').value || null
+            };
+
+            try {
+                let response;
+                if (editingEvalId) {
+                    formData.evaluation_id = editingEvalId;
+                    response = await fetch(`${API_BASE}/performance-evaluation/update.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    response = await fetch(`${API_BASE}/performance-evaluation/create.php`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification(editingEvalId ? 'Evaluation updated successfully' : 'Evaluation created successfully', 'success');
+                    toggleEvalModal(false);
+                    loadEvaluations();
+                } else {
+                    showNotification('Error: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Failed to save evaluation', 'error');
+                console.error(error);
+            }
+        });
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            const modal = document.getElementById('evalModal');
+            if (event.target == modal) {
+                toggleEvalModal(false);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEvaluations);
+    </script>
+</body>
+
+</html>
