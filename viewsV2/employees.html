@@ -302,6 +302,17 @@
                 <option value="">Select Position</option>
               </select>
             </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Supervisor (Optional)</label
+              >
+              <select
+                id="supervisor_id"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="">No Supervisor</option>
+              </select>
+            </div>
             <div class="md:col-span-2">
               <label class="block text-sm font-semibold text-gray-700 mb-1"
                 >Address</label
@@ -339,9 +350,41 @@
                 </label>
               </div>
             </div>
+            <!-- PERMANENT employee fields -->
+            <div
+              id="permanent-fields"
+              class="md:col-span-2 grid md:grid-cols-2 gap-4"
+            >
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1"
+                  >Annual Salary</label
+                >
+                <input
+                  type="number"
+                  id="annual_salary"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1"
+                  >Vacation Days</label
+                >
+                <input
+                  type="number"
+                  id="vacation_days"
+                  min="0"
+                  placeholder="14"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+            </div>
+            <!-- CONTRACT employee fields -->
             <div
               id="contract-fields"
-              class="md:col-span-2 hidden grid md:grid-cols-2 gap-4"
+              class="md:col-span-2 hidden grid md:grid-cols-3 gap-4"
             >
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1"
@@ -360,6 +403,19 @@
                 <input
                   type="date"
                   id="contract_end"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1"
+                  >Hourly Rate</label
+                >
+                <input
+                  type="number"
+                  id="hourly_rate"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -385,6 +441,162 @@
       </div>
     </div>
 
+    <!-- Employee Details Modal -->
+    <div
+      id="details-modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeDetailsModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+      >
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 flex justify-between items-center sticky top-0"
+        >
+          <div class="flex items-center">
+            <div
+              id="detail-avatar"
+              class="w-16 h-16 rounded-full bg-white/20 text-white flex items-center justify-center mr-4 text-2xl font-bold"
+            ></div>
+            <div>
+              <h3 id="detail-name" class="text-2xl font-bold text-white"></h3>
+              <p id="detail-position" class="text-blue-100 text-sm"></p>
+            </div>
+          </div>
+          <button
+            onclick="closeDetailsModal()"
+            class="text-white/80 hover:text-white transition"
+          >
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Employee Type Badge -->
+          <div class="mb-6">
+            <span
+              id="detail-type-badge"
+              class="px-4 py-2 rounded-full font-semibold text-sm"
+            ></span>
+          </div>
+
+          <!-- Employee Information Grid -->
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <!-- Personal Information -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
+                <i class="fas fa-user mr-2 text-blue-600"></i> Personal
+                Information
+              </h4>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Employee ID</label
+                >
+                <p id="detail-id" class="text-gray-900 font-semibold"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Email</label
+                >
+                <p id="detail-email" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Phone</label
+                >
+                <p id="detail-phone" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Date of Birth</label
+                >
+                <p id="detail-dob" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Address</label
+                >
+                <p id="detail-address" class="text-gray-900"></p>
+              </div>
+            </div>
+
+            <!-- Employment Information -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
+                <i class="fas fa-briefcase mr-2 text-blue-600"></i> Employment
+                Information
+              </h4>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Department</label
+                >
+                <p id="detail-department" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Position</label
+                >
+                <p id="detail-position-full" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Hire Date</label
+                >
+                <p id="detail-hire-date" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Supervisor</label
+                >
+                <p id="detail-supervisor" class="text-gray-900"></p>
+              </div>
+              <div id="contract-dates-section" class="hidden">
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Contract Period</label
+                >
+                <p id="detail-contract-dates" class="text-gray-900"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end gap-3 pt-6 border-t">
+            <button
+              onclick="closeDetailsModal()"
+              class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-semibold transition"
+            >
+              <i class="fas fa-times mr-2"></i> Close
+            </button>
+            <button
+              onclick="editFromDetails()"
+              class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+            >
+              <i class="fas fa-edit mr-2"></i> Edit Employee
+            </button>
+            <button
+              onclick="deleteFromDetails()"
+              class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition"
+            >
+              <i class="fas fa-trash mr-2"></i> Delete Employee
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Notification -->
     <div id="notification" class="hidden"></div>
 
@@ -394,37 +606,102 @@
       let editingId = null;
       let allEmployees = [];
 
-      // Toggle contract fields
+      // Toggle contract/permanent fields
       document.querySelectorAll('input[name="emp_type"]').forEach((radio) => {
         radio.addEventListener("change", (e) => {
           const contractFields = document.getElementById("contract-fields");
+          const permanentFields = document.getElementById("permanent-fields");
+
           if (e.target.value === "CONTRACT") {
             contractFields.classList.remove("hidden");
             contractFields.classList.add("grid");
+            permanentFields.classList.add("hidden");
+            permanentFields.classList.remove("grid");
           } else {
             contractFields.classList.add("hidden");
             contractFields.classList.remove("grid");
+            permanentFields.classList.remove("hidden");
+            permanentFields.classList.add("grid");
           }
         });
       });
 
       // Open modal
+      // Convert Oracle date format (DD-MON-YY) to YYYY-MM-DD
+      function convertOracleDateToISO(oracleDate) {
+        if (!oracleDate || typeof oracleDate !== "string") return "";
+
+        // If already in ISO format, return as is
+        if (oracleDate.match(/^\d{4}-\d{2}-\d{2}/)) {
+          return oracleDate.split("T")[0].split(" ")[0];
+        }
+
+        // Parse DD-MON-YY format
+        const months = {
+          JAN: "01",
+          FEB: "02",
+          MAR: "03",
+          APR: "04",
+          MAY: "05",
+          JUN: "06",
+          JUL: "07",
+          AUG: "08",
+          SEP: "09",
+          OCT: "10",
+          NOV: "11",
+          DEC: "12",
+        };
+
+        const parts = oracleDate.split("-");
+        if (parts.length === 3) {
+          const day = parts[0].padStart(2, "0");
+          const month = months[parts[1].toUpperCase()];
+          let year = parts[2];
+
+          // Convert 2-digit year to 4-digit
+          if (year.length === 2) {
+            const yearNum = parseInt(year);
+            year = yearNum > 50 ? "19" + year : "20" + year;
+          }
+
+          if (month) {
+            return `${year}-${month}-${day}`;
+          }
+        }
+
+        return "";
+      }
+
       function openModal(emp = null) {
         const modal = document.getElementById("modal");
         const form = document.getElementById("emp-form");
         const title = document.getElementById("modal-title");
 
         if (emp) {
+          console.log("Opening modal with employee:", emp); // Debug log
+
           editingId = emp.EMPLOYEE_ID;
-          document.getElementById("first_name").value = emp.FIRST_NAME;
-          document.getElementById("last_name").value = emp.LAST_NAME;
-          document.getElementById("email").value = emp.EMAIL;
-          document.getElementById("phone").value = emp.PHONE;
-          document.getElementById("date_of_birth").value = emp.DATE_OF_BIRTH;
-          document.getElementById("hire_date").value = emp.HIRE_DATE;
-          document.getElementById("address").value = emp.ADDRESS;
-          document.getElementById("department_id").value = emp.DEPARTMENT_ID;
-          document.getElementById("position_id").value = emp.POSITION_ID;
+          document.getElementById("first_name").value = emp.FIRST_NAME || "";
+          document.getElementById("last_name").value = emp.LAST_NAME || "";
+          document.getElementById("email").value = emp.EMAIL || "";
+          document.getElementById("phone").value = emp.PHONE_NUMBER || "";
+
+          // Convert and set date fields
+          const dob = convertOracleDateToISO(emp.DATE_OF_BIRTH);
+          const hireDate = convertOracleDateToISO(emp.HIRE_DATE);
+
+          console.log("Converted DOB:", dob);
+          console.log("Converted HIRE_DATE:", hireDate);
+
+          document.getElementById("date_of_birth").value = dob;
+          document.getElementById("hire_date").value = hireDate;
+
+          document.getElementById("address").value = emp.ADDRESS || "";
+          document.getElementById("department_id").value =
+            emp.DEPARTMENT_ID || "";
+          document.getElementById("position_id").value = emp.POSITION_ID || "";
+          document.getElementById("supervisor_id").value =
+            emp.SUPERVISOR_ID || "";
 
           const empType = emp.CONTRACT_START_DATE ? "CONTRACT" : "PERMANENT";
           document.querySelector(
@@ -436,18 +713,62 @@
               .getElementById("contract-fields")
               .classList.remove("hidden");
             document.getElementById("contract-fields").classList.add("grid");
-            document.getElementById("contract_start").value =
-              emp.CONTRACT_START_DATE || "";
-            document.getElementById("contract_end").value =
-              emp.CONTRACT_END_DATE || "";
+            document.getElementById("permanent-fields").classList.add("hidden");
+            document
+              .getElementById("permanent-fields")
+              .classList.remove("grid");
+
+            const contractStart = convertOracleDateToISO(
+              emp.CONTRACT_START_DATE,
+            );
+            const contractEnd = convertOracleDateToISO(emp.CONTRACT_END_DATE);
+
+            document.getElementById("hourly_rate").value =
+              emp.HOURLY_RATE || "";
+
+            document.getElementById("contract_start").value = contractStart;
+            document.getElementById("contract_end").value = contractEnd;
+          } else {
+            document.getElementById("contract-fields").classList.add("hidden");
+            document.getElementById("contract-fields").classList.remove("grid");
+            document
+              .getElementById("permanent-fields")
+              .classList.remove("hidden");
+            document.getElementById("permanent-fields").classList.add("grid");
+
+            document.getElementById("annual_salary").value =
+              emp.ANNUAL_SALARY || "";
+            document.getElementById("vacation_days").value =
+              emp.VACATION_DAYS || "";
+
+            document.getElementById("contract_start").value = "";
+            document.getElementById("contract_end").value = "";
+            document.getElementById("hourly_rate").value = "";
           }
 
           title.textContent = "Edit Employee";
         } else {
           editingId = null;
           form.reset();
+
+          // Reset employment type to PERMANENT
+          document.querySelector(
+            'input[name="emp_type"][value="PERMANENT"]',
+          ).checked = true;
+
           document.getElementById("contract-fields").classList.add("hidden");
           document.getElementById("contract-fields").classList.remove("grid");
+          document
+            .getElementById("permanent-fields")
+            .classList.remove("hidden");
+          document.getElementById("permanent-fields").classList.add("grid");
+
+          document.getElementById("contract_start").value = "";
+          document.getElementById("contract_end").value = "";
+          document.getElementById("hourly_rate").value = "";
+          document.getElementById("annual_salary").value = "";
+          document.getElementById("vacation_days").value = "";
+
           title.textContent = "Add Employee";
         }
         modal.classList.remove("hidden");
@@ -461,9 +782,10 @@
       // Load departments and positions
       async function loadDropdowns() {
         try {
-          const [depts, positions] = await Promise.all([
+          const [depts, positions, employees] = await Promise.all([
             Utils.apiCall("/departments/list.php"),
             Utils.apiCall("/positions/list.php"),
+            Utils.apiCall("/employees/list.php"),
           ]);
 
           if (depts.success && depts.data) {
@@ -480,6 +802,14 @@
             const posSelect = document.getElementById("position_id");
             positions.data.forEach((pos) => {
               posSelect.innerHTML += `<option value="${pos.POSITION_ID}">${pos.POSITION_TITLE}</option>`;
+            });
+          }
+
+          // Load supervisors (all employees can be potential supervisors)
+          if (employees.success && employees.data) {
+            const supervisorSelect = document.getElementById("supervisor_id");
+            employees.data.forEach((emp) => {
+              supervisorSelect.innerHTML += `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME} (${emp.POSITION_TITLE || "No Position"})</option>`;
             });
           }
         } catch (error) {
@@ -541,6 +871,12 @@
           return;
         }
 
+        // Store employees in map for easy lookup
+        employeesMap = {};
+        employees.forEach((emp) => {
+          employeesMap[emp.EMPLOYEE_ID] = emp;
+        });
+
         tbody.innerHTML = employees
           .map((emp) => {
             const empType = emp.CONTRACT_START_DATE ? "CONTRACT" : "PERMANENT";
@@ -564,16 +900,17 @@
                     </td>
                     <td class="px-6 py-4 text-gray-600">
                         <div class="text-sm"><i class="fas fa-envelope mr-2 text-gray-400"></i>${emp.EMAIL}</div>
-                        <div class="text-sm mt-1"><i class="fas fa-phone mr-2 text-gray-400"></i>${emp.PHONE_NUMBER || 'N/A'}</div>
+                        <div class="text-sm mt-1"><i class="fas fa-phone mr-2 text-gray-400"></i>${emp.PHONE_NUMBER || "N/A"}</div>
                     </td>
                     <td class="px-6 py-4 text-gray-700">${emp.DEPARTMENT_NAME || "N/A"}</td>
                     <td class="px-6 py-4 text-gray-700">${emp.POSITION_TITLE || "N/A"}</td>
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 text-xs rounded-full font-semibold ${typeClass}">${empType}</span>
                     </td>
-                    <td class="px-6 py-4 text-center space-x-3 text-lg">
-                        <button onclick='editEmp(${JSON.stringify(emp)})' class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteEmp(${emp.EMPLOYEE_ID})" class="text-gray-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                    <td class="px-6 py-4 text-center">
+                        <button onclick='viewEmployeeDetails(${emp.EMPLOYEE_ID})' class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
                     </td>
                 </tr>
             `;
@@ -585,10 +922,121 @@
       function updateStats(employees) {
         document.getElementById("total-employees").textContent =
           employees.length;
-        const permanent = employees.filter((emp) => !emp.CONTRACT_START_DATE).length;
-        const contract = employees.filter((emp) => emp.CONTRACT_START_DATE).length;
+        const permanent = employees.filter(
+          (emp) => !emp.CONTRACT_START_DATE,
+        ).length;
+        const contract = employees.filter(
+          (emp) => emp.CONTRACT_START_DATE,
+        ).length;
         document.getElementById("permanent-count").textContent = permanent;
         document.getElementById("contract-count").textContent = contract;
+      }
+
+      // Store current employee for details modal
+      let currentEmployee = null;
+      let employeesMap = {};
+
+      // View employee details
+      function viewEmployeeDetails(empId) {
+        const emp = employeesMap[empId];
+        if (!emp) {
+          console.error("Employee not found:", empId);
+          return;
+        }
+        currentEmployee = emp;
+        const modal = document.getElementById("details-modal");
+
+        // Set avatar
+        document.getElementById("detail-avatar").textContent =
+          `${emp.FIRST_NAME[0]}${emp.LAST_NAME[0]}`;
+
+        // Set header info
+        document.getElementById("detail-name").textContent =
+          `${emp.FIRST_NAME} ${emp.LAST_NAME}`;
+        document.getElementById("detail-position").textContent =
+          emp.POSITION_TITLE || "No Position Assigned";
+
+        // Set employee type badge
+        const empType = emp.CONTRACT_START_DATE ? "CONTRACT" : "PERMANENT";
+        const typeClass =
+          empType === "PERMANENT"
+            ? "bg-green-100 text-green-700"
+            : "bg-purple-100 text-purple-700";
+        const typeBadge = document.getElementById("detail-type-badge");
+        typeBadge.textContent = empType + " EMPLOYEE";
+        typeBadge.className = `px-4 py-2 rounded-full font-semibold text-sm ${typeClass}`;
+
+        // Set personal information
+        document.getElementById("detail-id").textContent = emp.EMPLOYEE_ID;
+        document.getElementById("detail-email").textContent = emp.EMAIL;
+        document.getElementById("detail-phone").textContent =
+          emp.PHONE_NUMBER || "N/A";
+        document.getElementById("detail-dob").textContent = emp.DATE_OF_BIRTH
+          ? Utils.formatDate(emp.DATE_OF_BIRTH)
+          : "N/A";
+        document.getElementById("detail-address").textContent =
+          emp.ADDRESS || "N/A";
+
+        // Set employment information
+        document.getElementById("detail-department").textContent =
+          emp.DEPARTMENT_NAME || "N/A";
+        document.getElementById("detail-position-full").textContent =
+          emp.POSITION_TITLE || "N/A";
+        document.getElementById("detail-hire-date").textContent = emp.HIRE_DATE
+          ? Utils.formatDate(emp.HIRE_DATE)
+          : "N/A";
+        document.getElementById("detail-supervisor").textContent =
+          emp.SUPERVISOR_NAME || "No Supervisor Assigned";
+
+        // Show/hide contract dates
+        const contractSection = document.getElementById(
+          "contract-dates-section",
+        );
+        if (emp.CONTRACT_START_DATE) {
+          contractSection.classList.remove("hidden");
+          const startDate = Utils.formatDate(emp.CONTRACT_START_DATE);
+          const endDate = emp.CONTRACT_END_DATE
+            ? Utils.formatDate(emp.CONTRACT_END_DATE)
+            : "N/A";
+          document.getElementById("detail-contract-dates").textContent =
+            `${startDate} to ${endDate}`;
+        } else {
+          contractSection.classList.add("hidden");
+        }
+
+        modal.classList.remove("hidden");
+      }
+
+      // Close details modal
+      function closeDetailsModal() {
+        document.getElementById("details-modal").classList.add("hidden");
+        currentEmployee = null;
+      }
+
+      // Edit from details modal
+      function editFromDetails() {
+        console.log(
+          "Edit from details clicked, currentEmployee:",
+          currentEmployee,
+        );
+        if (currentEmployee) {
+          const empToEdit = currentEmployee; // Store reference before closing
+          closeDetailsModal();
+          // Add small delay to ensure modal closes first
+          setTimeout(() => {
+            openModal(empToEdit);
+          }, 100);
+        } else {
+          console.error("No current employee to edit");
+        }
+      }
+
+      // Delete from details modal
+      async function deleteFromDetails() {
+        if (currentEmployee) {
+          await deleteEmp(currentEmployee.EMPLOYEE_ID);
+          closeDetailsModal();
+        }
       }
 
       // Edit employee
@@ -630,11 +1078,12 @@
             'input[name="emp_type"]:checked',
           ).value;
 
+          // Convert dates back to Oracle format (DD-MON-YY) for API
           const formData = {
             first_name: document.getElementById("first_name").value,
             last_name: document.getElementById("last_name").value,
             email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value,
+            phone_number: document.getElementById("phone").value,
             date_of_birth: document.getElementById("date_of_birth").value,
             hire_date: document.getElementById("hire_date").value,
             address: document.getElementById("address").value,
@@ -642,14 +1091,30 @@
               document.getElementById("department_id").value,
             ),
             position_id: parseInt(document.getElementById("position_id").value),
-            employee_type: empType,
+            supervisor_id: document.getElementById("supervisor_id").value
+              ? parseInt(document.getElementById("supervisor_id").value)
+              : null,
+            employment_type: empType,
           };
 
           if (empType === "CONTRACT") {
-            formData.contract_start =
+            formData.contract_start_date =
               document.getElementById("contract_start").value;
-            formData.contract_end =
+            formData.contract_end_date =
               document.getElementById("contract_end").value;
+            formData.hourly_rate = parseFloat(
+              document.getElementById("hourly_rate").value,
+            );
+          } else if (empType === "PERMANENT") {
+            const annualSalary = document.getElementById("annual_salary").value;
+            const vacationDays = document.getElementById("vacation_days").value;
+
+            if (annualSalary) {
+              formData.annual_salary = parseFloat(annualSalary);
+            }
+            if (vacationDays) {
+              formData.vacation_days = parseInt(vacationDays);
+            }
           }
 
           if (editingId) {

@@ -113,6 +113,9 @@ class EmployeeController {
                 Response::error('Employment type must be either CONTRACT or PERMANENT', 400);
             }
             
+            // Set optional fields
+            $data['supervisor_id'] = $data['supervisor_id'] ?? null;
+            
             $result = $this->employeeModel->updateEmployee($id, $data);
             
             if ($result) {
