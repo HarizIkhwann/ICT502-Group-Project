@@ -199,15 +199,15 @@
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Manager ID
+                >Department Manager
                 <span class="text-gray-400 text-xs">(Optional)</span></label
               >
-              <input
-                type="number"
+              <select
                 id="manager_id"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="e.g., 1"
-              />
+              >
+                <option value="">No Manager</option>
+              </select>
             </div>
           </div>
 
@@ -238,11 +238,33 @@
     <script>
       let editingId = null;
 
+      // Load employees for manager dropdown
+      async function loadManagers() {
+        try {
+          const result = await Utils.apiCall("/employees/list.php");
+
+          if (result.success && result.data) {
+            const managerSelect = document.getElementById("manager_id");
+            // Clear existing options except the first one (No Manager)
+            managerSelect.innerHTML = '<option value="">No Manager</option>';
+
+            result.data.forEach((emp) => {
+              managerSelect.innerHTML += `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME} - ${emp.POSITION_TITLE || "No Position"}</option>`;
+            });
+          }
+        } catch (error) {
+          console.error("Failed to load employees:", error);
+        }
+      }
+
       // Open modal
       function openModal(dept = null) {
         const modal = document.getElementById("modal");
         const form = document.getElementById("dept-form");
         const title = document.getElementById("modal-title");
+
+        // Load managers before opening modal
+        loadManagers();
 
         if (dept) {
           editingId = dept.DEPARTMENT_ID;
@@ -415,7 +437,10 @@
         });
 
       // Load on page ready
-      document.addEventListener("DOMContentLoaded", loadDepartments);
+      document.addEventListener("DOMContentLoaded", () => {
+        loadDepartments();
+        loadManagers();
+      });
     </script>
   </body>
 </html>
