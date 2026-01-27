@@ -1,35 +1,39 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
 
-class Database {
+class Database
+{
     private static $instance = null;
-    private $connection;
+    private $conn;
 
-    public function __construct() {
-        $this->connection = oci_pconnect(DB_USERNAME, DB_PASSWORD, DB_CONNECTION_STRING);
-        if (!$this->connection) {
+    private $username = "HR";
+    private $password = "ORACLE";
+    private $connection_string = "localhost:1521/FREEPDB1";
+
+
+    // Prevent direct creation
+    private function __construct()
+    {
+       $this->conn = oci_connect($this->username, $this->password, $this->connection_string);
+
+
+        if (!$this->conn) {
             $e = oci_error();
-            throw new Exception("Failed to connect to the database." . $e['message']);
+            throw new Exception("Oracle Connection Error: " . $e['message']);
         }
     }
 
-    public static function getInstance() {
+    // Singleton accessor (what your Attendance model calls)
+    public static function getInstance(): Database
+    {
         if (self::$instance === null) {
             self::$instance = new Database();
         }
         return self::$instance;
     }
 
-    public function getConnection() {
-        return $this->connection;
+    // Returns the active Oracle connection resource
+    public function getConnection()
+    {
+        return $this->conn;
     }
-    public function closeConnection() {
-        if ($this->connection) {
-            oci_close($this->connection);
-            $this->connection = null;
-        }
-    }
-    
-    //Prevent cloning
-    private function __clone() {}
 }

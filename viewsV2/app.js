@@ -1,6 +1,6 @@
 // Global configuration
 const CONFIG = {
-  API_BASE: "http://localhost/ICT502%20Group%20Project/api",
+  API_BASE: "http://localhost/ICT502-Group-Project/api",
   NOTIFICATION_DURATION: 3000,
 };
 
