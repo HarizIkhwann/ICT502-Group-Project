@@ -143,13 +143,12 @@
                   <th class="px-6 py-4">Position Title</th>
                   <th class="px-6 py-4">Min Salary</th>
                   <th class="px-6 py-4">Max Salary</th>
-                  <th class="px-6 py-4">Salary Range</th>
                   <th class="px-6 py-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="table-body" class="divide-y divide-gray-100 text-sm">
                 <tr>
-                  <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                  <td colspan="4" class="px-6 py-8 text-center text-gray-500">
                     Loading...
                   </td>
                 </tr>
@@ -295,7 +294,7 @@
             "error",
           );
           document.getElementById("table-body").innerHTML =
-            '<tr><td colspan="5" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
+            '<tr><td colspan="4" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
         }
       }
 
@@ -305,14 +304,12 @@
 
         if (!positions || positions.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No positions found</td></tr>';
+            '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500">No positions found</td></tr>';
           return;
         }
 
         tbody.innerHTML = positions
           .map((pos) => {
-            const range =
-              parseFloat(pos.MAX_SALARY) - parseFloat(pos.MIN_SALARY);
             return `
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4">
@@ -328,14 +325,6 @@
                     </td>
                     <td class="px-6 py-4">
                         <span class="font-mono font-semibold text-gray-700">${Utils.formatCurrency(pos.MAX_SALARY)}</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-2">
-                            <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-green-400 to-blue-500" style="width: 100%"></div>
-                            </div>
-                            <span class="text-xs font-mono text-gray-500">${Utils.formatCurrency(range)}</span>
-                        </div>
                     </td>
                     <td class="px-6 py-4 text-center space-x-3 text-lg">
                         <button onclick='editPos(${JSON.stringify(pos)})' class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></button>
