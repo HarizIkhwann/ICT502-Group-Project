@@ -121,9 +121,7 @@ class LeaveController {
                 Response::error('Status is required', 400);
             }
             
-            if (empty($approved_by)) {
-                Response::error('Approver ID is required', 400);
-            }
+            // Note: approved_by can be null until login system is implemented
             
             // Validate status
             $validStatuses = ['APPROVED', 'REJECTED'];
