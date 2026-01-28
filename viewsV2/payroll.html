@@ -275,26 +275,42 @@
               />
             </div>
 
-            <!-- Deductions -->
+            <!-- EPF (Auto-calculated: GrossPay × 0.11) -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Deductions</label
+                >EPF (11%)</label
               >
               <input
                 type="number"
-                id="deductions"
+                id="epf"
                 step="0.01"
                 min="0"
                 placeholder="0.00"
-                oninput="calculateNetPay()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 outline-none"
               />
             </div>
 
-            <!-- Tax Amount -->
+            <!-- SOCSO (Auto-calculated: GrossPay × 0.005) -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Tax Amount</label
+                >SOCSO (0.5%)</label
+              >
+              <input
+                type="number"
+                id="socso"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 outline-none"
+              />
+            </div>
+
+            <!-- Tax Amount (Auto-calculated: GrossPay × 0.05) -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Tax Amount (5%)</label
               >
               <input
                 type="number"
@@ -302,8 +318,24 @@
                 step="0.01"
                 min="0"
                 placeholder="0.00"
-                oninput="calculateNetPay()"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 outline-none"
+              />
+            </div>
+
+            <!-- Total Deductions (Auto-calculated: Tax + EPF + SOCSO) -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Total Deductions</label
+              >
+              <input
+                type="number"
+                id="deductions"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                readonly
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 outline-none"
               />
             </div>
 
@@ -506,11 +538,22 @@
         const grossPay = parseFloat(document.getElementById("gross_pay").value) || 0;
         const allowances = parseFloat(document.getElementById("allowances").value) || 0;
         const overtime = parseFloat(document.getElementById("overtime_pay").value) || 0;
-        const deductions = parseFloat(document.getElementById("deductions").value) || 0;
-        const tax = parseFloat(document.getElementById("tax_amount").value) || 0;
 
-        const netPay = grossPay + allowances + overtime - deductions - tax;
-        document.getElementById("net_pay").value = Math.max(0, netPay.toFixed(2));
+        // Calculate deductions based on GrossPay
+        const epf = (grossPay * 0.11).toFixed(2);
+        const socso = (grossPay * 0.005).toFixed(2);
+        const tax = (grossPay * 0.05).toFixed(2);
+        const totalDeductions = (parseFloat(epf) + parseFloat(socso) + parseFloat(tax)).toFixed(2);
+
+        // Update deduction fields
+        document.getElementById("epf").value = epf;
+        document.getElementById("socso").value = socso;
+        document.getElementById("tax_amount").value = tax;
+        document.getElementById("deductions").value = totalDeductions;
+
+        // Calculate net pay: GrossPay + Allowances + Overtime - Deductions
+        const netPay = (grossPay + parseFloat(allowances) + parseFloat(overtime) - parseFloat(totalDeductions)).toFixed(2);
+        document.getElementById("net_pay").value = Math.max(0, netPay);
       }
 
       // Open modal
@@ -529,9 +572,10 @@
           document.getElementById("gross_pay").value = payroll.GROSS_PAY || "";
           document.getElementById("allowances").value = payroll.ALLOWANCES || "0";
           document.getElementById("overtime_pay").value = payroll.OVERTIME_PAY || "0";
-          document.getElementById("deductions").value = payroll.DEDUCTIONS || "0";
-          document.getElementById("tax_amount").value = payroll.TAX_AMOUNT || "0";
           document.getElementById("net_pay").value = payroll.NET_PAY || "";
+          
+          // Recalculate deductions based on loaded values
+          calculateNetPay();
 
           title.textContent = "Edit Payroll";
         } else {
