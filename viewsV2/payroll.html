@@ -51,127 +51,49 @@
               onclick="openModal()"
               class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg shadow-lg flex items-center justify-center font-semibold transition"
             >
-              <i class="fas fa-dollar-sign mr-2"></i> Add Payroll
+              <i class="fas fa-plus mr-2"></i> New Payroll
             </button>
           </div>
 
-          <!-- Stats Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div
-              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
-            >
-              <div class="flex items-center">
-                <div
-                  class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4"
-                >
-                  <i class="fas fa-file-invoice-dollar text-xl"></i>
-                </div>
-                <div>
-                  <p
-                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
-                  >
-                    Total Records
-                  </p>
-                  <h2
-                    id="total-records"
-                    class="text-2xl font-bold text-gray-900"
-                  >
-                    0
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div
-              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
-            >
-              <div class="flex items-center">
-                <div
-                  class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4"
-                >
-                  <i class="fas fa-money-bill-wave text-xl"></i>
-                </div>
-                <div>
-                  <p
-                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
-                  >
-                    Total Gross
-                  </p>
-                  <h2 id="total-gross" class="text-2xl font-bold text-gray-900">
-                    $0
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div
-              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
-            >
-              <div class="flex items-center">
-                <div
-                  class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mr-4"
-                >
-                  <i class="fas fa-minus-circle text-xl"></i>
-                </div>
-                <div>
-                  <p
-                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
-                  >
-                    Total Deductions
-                  </p>
-                  <h2
-                    id="total-deductions"
-                    class="text-2xl font-bold text-gray-900"
-                  >
-                    $0
-                  </h2>
-                </div>
-              </div>
-            </div>
-            <div
-              class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200"
-            >
-              <div class="flex items-center">
-                <div
-                  class="w-12 h-12 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mr-4"
-                >
-                  <i class="fas fa-wallet text-xl"></i>
-                </div>
-                <div>
-                  <p
-                    class="text-sm text-gray-500 font-medium uppercase tracking-wider"
-                  >
-                    Total Net
-                  </p>
-                  <h2 id="total-net" class="text-2xl font-bold text-gray-900">
-                    $0
-                  </h2>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Filters -->
+          <!-- Filter Section -->
           <div
             class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-6"
           >
             <div class="flex flex-wrap gap-4">
-              <select
-                id="employee-filter"
-                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              >
-                <option value="">All Employees</option>
-              </select>
-              <button
-                onclick="filterPayroll()"
-                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-              >
-                <i class="fas fa-filter mr-2"></i> Filter
-              </button>
-              <button
-                onclick="resetFilter()"
-                class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold"
-              >
-                <i class="fas fa-redo mr-2"></i> Reset
-              </button>
+              <div class="flex-1 min-w-48">
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >Employee</label
+                >
+                <select
+                  id="employee-filter"
+                  onchange="loadPayroll()"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="">All Employees</option>
+                </select>
+              </div>
+              <div class="flex-1 min-w-48">
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >From Date</label
+                >
+                <input
+                  type="date"
+                  id="from-date"
+                  onchange="loadPayroll()"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
+              <div class="flex-1 min-w-48">
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >To Date</label
+                >
+                <input
+                  type="date"
+                  id="to-date"
+                  onchange="loadPayroll()"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
             </div>
           </div>
 
@@ -186,10 +108,10 @@
                 <tr>
                   <th class="px-6 py-4">Employee</th>
                   <th class="px-6 py-4">Pay Period</th>
-                  <th class="px-6 py-4">Gross Salary</th>
-                  <th class="px-6 py-4">Deductions</th>
-                  <th class="px-6 py-4">Net Salary</th>
-                  <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4">Payment Date</th>
+                  <th class="px-6 py-4 text-right">Gross Pay</th>
+                  <th class="px-6 py-4 text-right">Net Pay</th>
+                  <th class="px-6 py-4">Payment Method</th>
                   <th class="px-6 py-4 text-center">Actions</th>
                 </tr>
               </thead>
@@ -216,13 +138,13 @@
         onclick="closeModal()"
       ></div>
       <div
-        class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden"
+        class="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
       >
         <div
-          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center"
+          class="bg-gray-50 px-6 py-4 border-b flex justify-between items-center sticky top-0"
         >
           <h3 id="modal-title" class="text-xl font-bold text-gray-800">
-            Add Payroll
+            New Payroll
           </h3>
           <button
             onclick="closeModal()"
@@ -233,10 +155,11 @@
         </div>
 
         <form id="payroll-form" class="p-6">
-          <div class="space-y-4">
+          <div class="grid md:grid-cols-2 gap-4">
+            <!-- Employee -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Employee</label
+                >Employee <span class="text-red-500">*</span></label
               >
               <select
                 id="employee_id"
@@ -246,9 +169,28 @@
                 <option value="">Select Employee</option>
               </select>
             </div>
+
+            <!-- Payment Method -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Pay Period Start</label
+                >Payment Method <span class="text-red-500">*</span></label
+              >
+              <select
+                id="payment_method"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="CHEQUE">Cheque</option>
+                <option value="CASH">Cash</option>
+                <option value="DIRECT_DEPOSIT">Direct Deposit</option>
+              </select>
+            </div>
+
+            <!-- Pay Period Start -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Pay Period Start <span class="text-red-500">*</span></label
               >
               <input
                 type="date"
@@ -257,9 +199,11 @@
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
+
+            <!-- Pay Period End -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Pay Period End</label
+                >Pay Period End <span class="text-red-500">*</span></label
               >
               <input
                 type="date"
@@ -268,40 +212,115 @@
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
+
+            <!-- Payment Date -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Gross Salary ($)</label
-              >
-              <input
-                type="number"
-                id="gross_salary"
-                required
-                step="0.01"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Deductions ($)</label
-              >
-              <input
-                type="number"
-                id="deductions"
-                required
-                step="0.01"
-                value="0"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Payment Date</label
+                >Payment Date <span class="text-red-500">*</span></label
               >
               <input
                 type="date"
                 id="payment_date"
                 required
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <!-- Gross Pay -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Gross Pay <span class="text-red-500">*</span></label
+              >
+              <input
+                type="number"
+                id="gross_pay"
+                required
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                oninput="calculateNetPay()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <!-- Allowances -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Allowances</label
+              >
+              <input
+                type="number"
+                id="allowances"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                oninput="calculateNetPay()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <!-- Overtime Pay -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Overtime Pay</label
+              >
+              <input
+                type="number"
+                id="overtime_pay"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                oninput="calculateNetPay()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <!-- Deductions -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Deductions</label
+              >
+              <input
+                type="number"
+                id="deductions"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                oninput="calculateNetPay()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <!-- Tax Amount -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Tax Amount</label
+              >
+              <input
+                type="number"
+                id="tax_amount"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                oninput="calculateNetPay()"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <!-- Net Pay -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Net Pay <span class="text-red-500">*</span></label
+              >
+              <input
+                type="number"
+                id="net_pay"
+                required
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50"
+                readonly
               />
             </div>
           </div>
@@ -325,7 +344,122 @@
       </div>
     </div>
 
-    <!-- Notification -->
+    <!-- Details Modal -->
+    <div
+      id="details-modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeDetailsModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+      >
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 flex justify-between items-center sticky top-0"
+        >
+          <div>
+            <h3 id="detail-employee" class="text-2xl font-bold text-white"></h3>
+            <p id="detail-period" class="text-blue-100 text-sm"></p>
+          </div>
+          <button
+            onclick="closeDetailsModal()"
+            class="text-white/80 hover:text-white transition"
+          >
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <!-- Payment Information -->
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <!-- Left Column -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
+                <i class="fas fa-calendar-alt mr-2 text-blue-600"></i> Period Details
+              </h4>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Pay Period</label
+                >
+                <p id="detail-pay-period" class="text-gray-900 font-semibold"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Payment Date</label
+                >
+                <p id="detail-payment-date" class="text-gray-900"></p>
+              </div>
+              <div>
+                <label
+                  class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
+                  >Payment Method</label
+                >
+                <p id="detail-payment-method" class="text-gray-900"></p>
+              </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
+                <i class="fas fa-money-bill-wave mr-2 text-blue-600"></i> Payment Breakdown
+              </h4>
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-700">Gross Pay:</span>
+                  <span id="detail-gross" class="font-semibold text-gray-900"></span>
+                </div>
+                <div class="flex justify-between mb-2" id="detail-allowances-row">
+                  <span class="text-gray-700">Allowances:</span>
+                  <span id="detail-allowances" class="text-gray-900"></span>
+                </div>
+                <div class="flex justify-between mb-2" id="detail-overtime-row">
+                  <span class="text-gray-700">Overtime:</span>
+                  <span id="detail-overtime" class="text-gray-900"></span>
+                </div>
+                <div class="flex justify-between mb-2" id="detail-deductions-row">
+                  <span class="text-gray-700">Deductions:</span>
+                  <span id="detail-deductions" class="text-red-600 font-semibold"></span>
+                </div>
+                <div class="flex justify-between" id="detail-tax-row">
+                  <span class="text-gray-700">Tax:</span>
+                  <span id="detail-tax" class="text-red-600 font-semibold"></span>
+                </div>
+                <div class="border-t border-blue-200 mt-3 pt-3 flex justify-between">
+                  <span class="text-gray-900 font-bold">Net Pay:</span>
+                  <span id="detail-net" class="text-lg font-bold text-green-600"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex justify-end gap-3 pt-6 border-t">
+            <button
+              onclick="closeDetailsModal()"
+              class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-semibold transition"
+            >
+              <i class="fas fa-times mr-2"></i> Close
+            </button>
+            <button
+              onclick="editFromDetails()"
+              class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+            >
+              <i class="fas fa-edit mr-2"></i> Edit
+            </button>
+            <button
+              onclick="deleteFromDetails()"
+              class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition"
+            >
+              <i class="fas fa-trash mr-2"></i> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="notification" class="hidden"></div>
 
     <!-- Scripts -->
@@ -333,9 +467,51 @@
     <script>
       let editingId = null;
       let allPayroll = [];
+      let currentPayroll = null;
 
-      // Set today's date as default
-      document.getElementById("payment_date").valueAsDate = new Date();
+      // Convert Oracle date format to ISO
+      function convertOracleDateToISO(oracleDate) {
+        if (!oracleDate || typeof oracleDate !== "string") return "";
+
+        if (oracleDate.match(/^\d{4}-\d{2}-\d{2}/)) {
+          return oracleDate.split("T")[0].split(" ")[0];
+        }
+
+        const months = {
+          JAN: "01", FEB: "02", MAR: "03", APR: "04", MAY: "05", JUN: "06",
+          JUL: "07", AUG: "08", SEP: "09", OCT: "10", NOV: "11", DEC: "12",
+        };
+
+        const parts = oracleDate.split("-");
+        if (parts.length === 3) {
+          const day = parts[0].padStart(2, "0");
+          const month = months[parts[1].toUpperCase()];
+          let year = parts[2];
+
+          if (year.length === 2) {
+            const yearNum = parseInt(year);
+            year = yearNum > 50 ? "19" + year : "20" + year;
+          }
+
+          if (month) {
+            return `${year}-${month}-${day}`;
+          }
+        }
+
+        return "";
+      }
+
+      // Calculate net pay
+      function calculateNetPay() {
+        const grossPay = parseFloat(document.getElementById("gross_pay").value) || 0;
+        const allowances = parseFloat(document.getElementById("allowances").value) || 0;
+        const overtime = parseFloat(document.getElementById("overtime_pay").value) || 0;
+        const deductions = parseFloat(document.getElementById("deductions").value) || 0;
+        const tax = parseFloat(document.getElementById("tax_amount").value) || 0;
+
+        const netPay = grossPay + allowances + overtime - deductions - tax;
+        document.getElementById("net_pay").value = Math.max(0, netPay.toFixed(2));
+      }
 
       // Open modal
       function openModal(payroll = null) {
@@ -346,20 +522,29 @@
         if (payroll) {
           editingId = payroll.PAYROLL_ID;
           document.getElementById("employee_id").value = payroll.EMPLOYEE_ID;
-          document.getElementById("pay_period_start").value =
-            payroll.PAY_PERIOD_START;
-          document.getElementById("pay_period_end").value =
-            payroll.PAY_PERIOD_END;
-          document.getElementById("gross_salary").value = payroll.GROSS_SALARY;
-          document.getElementById("deductions").value = payroll.DEDUCTIONS;
-          document.getElementById("payment_date").value = payroll.PAYMENT_DATE;
+          document.getElementById("payment_method").value = payroll.PAYMENT_METHOD || "BANK_TRANSFER";
+          document.getElementById("pay_period_start").value = convertOracleDateToISO(payroll.PAY_PERIOD_START);
+          document.getElementById("pay_period_end").value = convertOracleDateToISO(payroll.PAY_PERIOD_END);
+          document.getElementById("payment_date").value = convertOracleDateToISO(payroll.PAYMENT_DATE);
+          document.getElementById("gross_pay").value = payroll.GROSS_PAY || "";
+          document.getElementById("allowances").value = payroll.ALLOWANCES || "0";
+          document.getElementById("overtime_pay").value = payroll.OVERTIME_PAY || "0";
+          document.getElementById("deductions").value = payroll.DEDUCTIONS || "0";
+          document.getElementById("tax_amount").value = payroll.TAX_AMOUNT || "0";
+          document.getElementById("net_pay").value = payroll.NET_PAY || "";
+
           title.textContent = "Edit Payroll";
         } else {
           editingId = null;
           form.reset();
-          document.getElementById("payment_date").valueAsDate = new Date();
-          title.textContent = "Add Payroll";
+          document.getElementById("payment_method").value = "BANK_TRANSFER";
+          document.getElementById("allowances").value = "0";
+          document.getElementById("overtime_pay").value = "0";
+          document.getElementById("deductions").value = "0";
+          document.getElementById("tax_amount").value = "0";
+          title.textContent = "New Payroll";
         }
+
         modal.classList.remove("hidden");
       }
 
@@ -368,18 +553,17 @@
         document.getElementById("modal").classList.add("hidden");
       }
 
-      // Load employees
-      async function loadEmployees() {
+      // Load employees dropdown
+      async function loadEmployeesDropdown() {
         try {
           const result = await Utils.apiCall("/employees/list.php");
           if (result.success && result.data) {
             const select = document.getElementById("employee_id");
-            const filter = document.getElementById("employee-filter");
+            const filterSelect = document.getElementById("employee-filter");
 
             result.data.forEach((emp) => {
-              const option = `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
-              select.innerHTML += option;
-              filter.innerHTML += option;
+              select.innerHTML += `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
+              filterSelect.innerHTML += `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
             });
           }
         } catch (error) {
@@ -387,46 +571,34 @@
         }
       }
 
-      // Load payroll
+      // Load payroll data
       async function loadPayroll() {
         try {
-          const result = await Utils.apiCall("/payroll/list.php");
+          const employeeFilter = document.getElementById("employee-filter").value;
+          const fromDate = document.getElementById("from-date").value;
+          const toDate = document.getElementById("to-date").value;
+
+          let endpoint = "/payroll/list.php";
+
+          if (employeeFilter && !fromDate && !toDate) {
+            endpoint = `/payroll/by-employee.php?employee_id=${employeeFilter}`;
+          } else if (fromDate && toDate) {
+            endpoint = `/payroll/by-date-range.php?start_date=${fromDate}&end_date=${toDate}`;
+          }
+
+          const result = await Utils.apiCall(endpoint);
 
           if (result.success && result.data) {
-            allPayroll = result.data;
-            displayPayroll(result.data);
-            updateStats(result.data);
+            allPayroll = Array.isArray(result.data) ? result.data : [result.data];
+            displayPayroll(allPayroll);
           } else {
             throw new Error(result.message || "Failed to load payroll");
           }
         } catch (error) {
-          Utils.showNotification(
-            "Failed to load payroll: " + error.message,
-            "error",
-          );
+          Utils.showNotification("Failed to load payroll: " + error.message, "error");
           document.getElementById("table-body").innerHTML =
             '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
         }
-      }
-
-      // Filter payroll
-      function filterPayroll() {
-        const employeeFilter = document.getElementById("employee-filter").value;
-        let filtered = allPayroll;
-
-        if (employeeFilter) {
-          filtered = filtered.filter(
-            (pay) => pay.EMPLOYEE_ID == employeeFilter,
-          );
-        }
-
-        displayPayroll(filtered);
-      }
-
-      // Reset filter
-      function resetFilter() {
-        document.getElementById("employee-filter").value = "";
-        displayPayroll(allPayroll);
       }
 
       // Display payroll
@@ -440,84 +612,130 @@
         }
 
         tbody.innerHTML = payroll
-          .map((pay) => {
-            const netSalary =
-              parseFloat(pay.GROSS_SALARY) - parseFloat(pay.DEDUCTIONS);
-            const isPaid = new Date(pay.PAYMENT_DATE) <= new Date();
-            const statusClass = isPaid
-              ? "bg-green-100 text-green-700"
-              : "bg-yellow-100 text-yellow-700";
-            const statusText = isPaid ? "Paid" : "Pending";
-
+          .map((p) => {
+            const payPeriod = `${Utils.formatDate(p.PAY_PERIOD_START)} to ${Utils.formatDate(p.PAY_PERIOD_END)}`;
             return `
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center mr-3 font-bold text-sm">
-                                ${pay.FIRST_NAME[0]}${pay.LAST_NAME[0]}
-                            </div>
-                            <div>
-                                <div class="font-semibold text-gray-900">${pay.FIRST_NAME} ${pay.LAST_NAME}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-gray-700">
-                        <div class="text-sm">${Utils.formatDate(pay.PAY_PERIOD_START)}</div>
-                        <div class="text-xs text-gray-500">to ${Utils.formatDate(pay.PAY_PERIOD_END)}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="font-mono font-semibold text-gray-900">${Utils.formatCurrency(pay.GROSS_SALARY)}</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="font-mono font-semibold text-red-600">${Utils.formatCurrency(pay.DEDUCTIONS)}</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="font-mono font-bold text-green-600">${Utils.formatCurrency(netSalary)}</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusClass}">${statusText}</span>
-                    </td>
-                    <td class="px-6 py-4 text-center space-x-3 text-lg">
-                        <button onclick='editPayroll(${JSON.stringify(pay)})' class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></button>
-                        <button onclick="deletePayroll(${pay.PAYROLL_ID})" class="text-gray-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
+              <tr class="hover:bg-gray-50 transition">
+                <td class="px-6 py-4">
+                  <div class="font-bold text-gray-900">${p.FIRST_NAME} ${p.LAST_NAME}</div>
+                  <div class="text-xs text-gray-500">ID: ${p.EMPLOYEE_ID}</div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700">${payPeriod}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">${Utils.formatDate(p.PAYMENT_DATE)}</td>
+                <td class="px-6 py-4 text-right font-semibold text-gray-900">${Utils.formatCurrency(p.GROSS_PAY)}</td>
+                <td class="px-6 py-4 text-right font-bold text-green-600">${Utils.formatCurrency(p.NET_PAY)}</td>
+                <td class="px-6 py-4 text-sm">
+                  <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                    ${p.PAYMENT_METHOD || "N/A"}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <button onclick="viewPayrollDetails(${p.PAYROLL_ID})" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition">
+                    <i class="fas fa-eye mr-1"></i> View
+                  </button>
+                </td>
+              </tr>
             `;
           })
           .join("");
       }
 
-      // Update stats
-      function updateStats(payroll) {
-        document.getElementById("total-records").textContent = payroll.length;
+      // View payroll details
+      function viewPayrollDetails(payrollId) {
+        console.log("Viewing payroll ID:", payrollId, "Type:", typeof payrollId);
+        console.log("All payroll:", allPayroll);
+        
+        const payroll = allPayroll.find((p) => p.PAYROLL_ID == payrollId);
+        if (!payroll) {
+          console.error("Payroll not found for ID:", payrollId);
+          Utils.showNotification("Payroll record not found", "error");
+          return;
+        }
 
-        const totalGross = payroll.reduce(
-          (sum, pay) => sum + parseFloat(pay.GROSS_SALARY),
-          0,
-        );
-        const totalDeductions = payroll.reduce(
-          (sum, pay) => sum + parseFloat(pay.DEDUCTIONS),
-          0,
-        );
-        const totalNet = totalGross - totalDeductions;
+        currentPayroll = payroll;
+        const modal = document.getElementById("details-modal");
 
-        document.getElementById("total-gross").textContent =
-          Utils.formatCurrency(totalGross);
-        document.getElementById("total-deductions").textContent =
-          Utils.formatCurrency(totalDeductions);
-        document.getElementById("total-net").textContent =
-          Utils.formatCurrency(totalNet);
+        document.getElementById("detail-employee").textContent =
+          `${payroll.FIRST_NAME} ${payroll.LAST_NAME}`;
+        document.getElementById("detail-period").textContent = `Payroll ID: ${payroll.PAYROLL_ID}`;
+
+        document.getElementById("detail-pay-period").textContent =
+          `${Utils.formatDate(payroll.PAY_PERIOD_START)} to ${Utils.formatDate(payroll.PAY_PERIOD_END)}`;
+        document.getElementById("detail-payment-date").textContent =
+          Utils.formatDate(payroll.PAYMENT_DATE);
+        document.getElementById("detail-payment-method").textContent =
+          payroll.PAYMENT_METHOD || "N/A";
+
+        document.getElementById("detail-gross").textContent =
+          Utils.formatCurrency(payroll.GROSS_PAY);
+
+        // Show/hide components if they have values
+        if (payroll.ALLOWANCES > 0) {
+          document.getElementById("detail-allowances-row").classList.remove("hidden");
+          document.getElementById("detail-allowances").textContent =
+            Utils.formatCurrency(payroll.ALLOWANCES);
+        } else {
+          document.getElementById("detail-allowances-row").classList.add("hidden");
+        }
+
+        if (payroll.OVERTIME_PAY > 0) {
+          document.getElementById("detail-overtime-row").classList.remove("hidden");
+          document.getElementById("detail-overtime").textContent =
+            Utils.formatCurrency(payroll.OVERTIME_PAY);
+        } else {
+          document.getElementById("detail-overtime-row").classList.add("hidden");
+        }
+
+        if (payroll.DEDUCTIONS > 0) {
+          document.getElementById("detail-deductions-row").classList.remove("hidden");
+          document.getElementById("detail-deductions").textContent =
+            Utils.formatCurrency(payroll.DEDUCTIONS);
+        } else {
+          document.getElementById("detail-deductions-row").classList.add("hidden");
+        }
+
+        if (payroll.TAX_AMOUNT > 0) {
+          document.getElementById("detail-tax-row").classList.remove("hidden");
+          document.getElementById("detail-tax").textContent =
+            Utils.formatCurrency(payroll.TAX_AMOUNT);
+        } else {
+          document.getElementById("detail-tax-row").classList.add("hidden");
+        }
+
+        document.getElementById("detail-net").textContent =
+          Utils.formatCurrency(payroll.NET_PAY);
+
+        modal.classList.remove("hidden");
       }
 
-      // Edit payroll
-      function editPayroll(pay) {
-        openModal(pay);
+      // Close details modal
+      function closeDetailsModal() {
+        document.getElementById("details-modal").classList.add("hidden");
+        currentPayroll = null;
+      }
+
+      // Edit from details
+      function editFromDetails() {
+        if (currentPayroll) {
+          const payrollToEdit = currentPayroll;
+          closeDetailsModal();
+          setTimeout(() => {
+            openModal(payrollToEdit);
+          }, 100);
+        }
+      }
+
+      // Delete from details
+      async function deleteFromDetails() {
+        if (currentPayroll) {
+          await deletePayroll(currentPayroll.PAYROLL_ID);
+          closeDetailsModal();
+        }
       }
 
       // Delete payroll
       async function deletePayroll(id) {
-        if (!confirm("Are you sure you want to delete this payroll record?"))
-          return;
+        if (!confirm("Are you sure you want to delete this payroll record?")) return;
 
         try {
           const result = await Utils.apiCall("/payroll/delete.php", {
@@ -549,11 +767,14 @@
             employee_id: parseInt(document.getElementById("employee_id").value),
             pay_period_start: document.getElementById("pay_period_start").value,
             pay_period_end: document.getElementById("pay_period_end").value,
-            gross_salary: parseFloat(
-              document.getElementById("gross_salary").value,
-            ),
-            deductions: parseFloat(document.getElementById("deductions").value),
             payment_date: document.getElementById("payment_date").value,
+            gross_pay: parseFloat(document.getElementById("gross_pay").value),
+            allowances: parseFloat(document.getElementById("allowances").value) || 0,
+            overtime_pay: parseFloat(document.getElementById("overtime_pay").value) || 0,
+            deductions: parseFloat(document.getElementById("deductions").value) || 0,
+            tax_amount: parseFloat(document.getElementById("tax_amount").value) || 0,
+            net_pay: parseFloat(document.getElementById("net_pay").value),
+            payment_method: document.getElementById("payment_method").value,
           };
 
           if (editingId) {
@@ -561,9 +782,7 @@
           }
 
           try {
-            const endpoint = editingId
-              ? "/payroll/update.php"
-              : "/payroll/create.php";
+            const endpoint = editingId ? "/payroll/update.php" : "/payroll/create.php";
             const result = await Utils.apiCall(endpoint, {
               method: "POST",
               body: JSON.stringify(formData),
@@ -588,9 +807,9 @@
           }
         });
 
-      // Load on page ready
+      // Initialize on page load
       document.addEventListener("DOMContentLoaded", () => {
-        loadEmployees();
+        loadEmployeesDropdown();
         loadPayroll();
       });
     </script>
