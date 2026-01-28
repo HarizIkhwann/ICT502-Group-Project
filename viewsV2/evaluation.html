@@ -9,6 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <script src="app.js"></script>
   </head>
   <body class="bg-gray-100 font-sans">
     <!-- Mobile Header -->
@@ -190,14 +191,12 @@
                   <th class="px-6 py-4">Evaluation Date</th>
                   <th class="px-6 py-4">Score</th>
                   <th class="px-6 py-4">Rating</th>
-                  <th class="px-6 py-4">Comments</th>
-                  <th class="px-6 py-4">Status</th>
                   <th class="px-6 py-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="table-body" class="divide-y divide-gray-100 text-sm">
                 <tr>
-                  <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                  <td colspan="5" class="px-6 py-8 text-center text-gray-500">
                     Loading...
                   </td>
                 </tr>
@@ -259,35 +258,53 @@
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Performance Score (1-10)</label
-              >
-              <input
-                type="number"
-                id="score"
-                required
-                min="1"
-                max="10"
-                step="0.1"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              />
-              <div class="flex justify-between text-xs text-gray-500 mt-1">
-                <span>Poor</span>
-                <span>Average</span>
-                <span>Excellent</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1"
+                  >Performance Score (0-100)</label
+                >
+                <input
+                  type="number"
+                  id="score"
+                  required
+                  min="0"
+                  max="100"
+                  step="1"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                />
               </div>
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1"
-                >Comments</label
+                >Strengths</label
               >
               <textarea
-                id="comments"
-                required
-                rows="4"
+                id="strengths"
+                rows="3"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                placeholder="Provide detailed feedback on performance"
+                placeholder="Employee's key strengths"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Weaknesses</label
+              >
+              <textarea
+                id="weaknesses"
+                rows="3"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Areas for improvement"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1"
+                >Goals</label
+              >
+              <textarea
+                id="goals"
+                rows="3"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                placeholder="Performance goals and objectives"
               ></textarea>
             </div>
             <div>
@@ -299,11 +316,11 @@
                   <input
                     type="radio"
                     name="status"
-                    value="IN PROGRESS"
+                    value="DRAFT"
                     checked
                     class="mr-2"
                   />
-                  <span>In Progress</span>
+                  <span>Draft</span>
                 </label>
                 <label class="flex items-center cursor-pointer">
                   <input
@@ -337,11 +354,99 @@
       </div>
     </div>
 
+    <!-- Details Modal -->
+    <div
+      id="details-modal"
+      class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4"
+    >
+      <div
+        class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onclick="closeDetailsModal()"
+      ></div>
+      <div
+        class="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+      >
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 flex justify-between items-center sticky top-0"
+        >
+          <div>
+            <h3 id="detail-employee" class="text-2xl font-bold text-white"></h3>
+            <p id="detail-date" class="text-blue-100 text-sm"></p>
+          </div>
+          <button
+            onclick="closeDetailsModal()"
+            class="text-white/80 hover:text-white transition"
+          >
+            <i class="fas fa-times text-2xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="space-y-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
+                <i class="fas fa-chart-bar mr-2 text-blue-600"></i> Evaluation Details
+              </h4>
+              <div>
+                <label class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Score</label>
+                <p id="detail-score" class="text-3xl font-bold text-blue-600"></p>
+              </div>
+              <div>
+                <label class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Rating</label>
+                <p id="detail-rating" class="text-lg font-semibold"></p>
+              </div>
+              <div>
+                <label class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Status</label>
+                <p id="detail-status" class="text-gray-900 font-semibold"></p>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
+                <i class="fas fa-tasks mr-2 text-green-600"></i> Feedback
+              </h4>
+              <div>
+                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Strengths</label>
+                <p id="detail-strengths" class="text-gray-700 mt-1"></p>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Weaknesses</label>
+                <p id="detail-weaknesses" class="text-gray-700 mt-1"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h4 class="text-lg font-bold text-gray-800 mb-3 pb-2 border-b">
+              <i class="fas fa-bullseye mr-2 text-orange-600"></i> Goals
+            </h4>
+            <p id="detail-goals" class="text-gray-700"></p>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-6 border-t">
+            <button
+              type="button"
+              onclick="closeDetailsModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onclick="editFromDetails()"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold"
+            >
+              <i class="fas fa-edit mr-2"></i> Edit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Notification -->
     <div id="notification" class="hidden"></div>
 
     <!-- Scripts -->
-    <script src="app.js"></script>
     <script>
       let editingId = null;
       let allEvaluations = [];
@@ -361,7 +466,9 @@
           document.getElementById("evaluation_date").value =
             evaluation.EVALUATION_DATE;
           document.getElementById("score").value = evaluation.SCORE;
-          document.getElementById("comments").value = evaluation.COMMENTS;
+          document.getElementById("strengths").value = evaluation.STRENGTHS || "";
+          document.getElementById("weaknesses").value = evaluation.WEAKNESSES || "";
+          document.getElementById("goals").value = evaluation.GOALS || "";
           document.querySelector(
             `input[name="status"][value="${evaluation.STATUS}"]`,
           ).checked = true;
@@ -452,10 +559,10 @@
       // Get rating based on score
       function getRating(score) {
         const s = parseFloat(score);
-        if (s >= 9)
+        if (s >= 80)
           return { text: "Excellent", color: "text-green-600 bg-green-50" };
-        if (s >= 7) return { text: "Good", color: "text-blue-600 bg-blue-50" };
-        if (s >= 5)
+        if (s >= 60) return { text: "Good", color: "text-blue-600 bg-blue-50" };
+        if (s >= 40)
           return { text: "Average", color: "text-yellow-600 bg-yellow-50" };
         return { text: "Needs Improvement", color: "text-red-600 bg-red-50" };
       }
@@ -466,17 +573,13 @@
 
         if (!evaluations || evaluations.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No evaluations found</td></tr>';
+            '<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No evaluations found</td></tr>';
           return;
         }
 
         tbody.innerHTML = evaluations
           .map((eval) => {
             const rating = getRating(eval.SCORE);
-            const statusClass =
-              eval.STATUS === "COMPLETED"
-                ? "bg-green-100 text-green-700"
-                : "bg-yellow-100 text-yellow-700";
 
             return `
                 <tr class="hover:bg-gray-50 transition">
@@ -496,30 +599,16 @@
                             <div class="w-12 h-12 rounded-full border-4 ${rating.color} border flex items-center justify-center mr-2">
                                 <span class="text-lg font-bold">${eval.SCORE}</span>
                             </div>
-                            <span class="text-xs text-gray-500">/10</span>
+                            <span class="text-xs text-gray-500">/100</span>
                         </div>
                     </td>
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 text-xs rounded-full font-semibold ${rating.color} border">${rating.text}</span>
                     </td>
-                    <td class="px-6 py-4">
-                        <div class="max-w-xs truncate text-gray-600" title="${eval.COMMENTS}">${eval.COMMENTS}</div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 text-xs rounded-full font-semibold ${statusClass}">${eval.STATUS}</span>
-                    </td>
                     <td class="px-6 py-4 text-center space-x-3 text-lg">
-                        ${
-                          eval.STATUS === "IN PROGRESS"
-                            ? `
-                            <button onclick="completeEvaluation(${eval.EVALUATION_ID})" class="text-gray-400 hover:text-green-600" title="Mark as Completed">
-                                <i class="fas fa-check-circle"></i>
-                            </button>
-                        `
-                            : ""
-                        }
-                        <button onclick='editEvaluation(${JSON.stringify(eval)})' class="text-gray-400 hover:text-blue-600"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteEvaluation(${eval.EVALUATION_ID})" class="text-gray-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
+                        <button onclick='viewEvaluationDetails(${JSON.stringify(eval)})' class="text-gray-400 hover:text-blue-600" title="View Details"><i class="fas fa-eye"></i></button>
+                        <button onclick='editEvaluation(${JSON.stringify(eval)})' class="text-gray-400 hover:text-blue-600" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteEvaluation(${eval.EVALUATION_ID})" class="text-gray-400 hover:text-red-600" title="Delete"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
             `;
@@ -554,8 +643,42 @@
 
       // Edit evaluation
       function editEvaluation(eval) {
+        closeDetailsModal();
         openModal(eval);
       }
+
+      // View evaluation details
+      function viewEvaluationDetails(eval) {
+        const rating = getRating(eval.SCORE);
+        document.getElementById("detail-employee").textContent = `${eval.FIRST_NAME} ${eval.LAST_NAME}`;
+        document.getElementById("detail-date").textContent = `Evaluated on ${Utils.formatDate(eval.EVALUATION_DATE)}`;
+        document.getElementById("detail-score").textContent = eval.SCORE;
+        document.getElementById("detail-rating").textContent = rating.text;
+        document.getElementById("detail-status").innerHTML = `<span class="px-3 py-1 text-xs rounded-full font-semibold ${rating.color} border">${eval.STATUS}</span>`;
+        document.getElementById("detail-strengths").textContent = eval.STRENGTHS || "—";
+        document.getElementById("detail-weaknesses").textContent = eval.WEAKNESSES || "—";
+        document.getElementById("detail-goals").textContent = eval.GOALS || "—";
+        
+        // Store current eval for editing
+        currentEval = eval;
+        
+        document.getElementById("details-modal").classList.remove("hidden");
+      }
+
+      // Close details modal
+      function closeDetailsModal() {
+        document.getElementById("details-modal").classList.add("hidden");
+        currentEval = null;
+      }
+
+      // Edit from details modal
+      function editFromDetails() {
+        const evalToEdit = currentEval;
+        closeDetailsModal();
+        openModal(evalToEdit);
+      }
+
+      let currentEval = null;
 
       // Complete evaluation
       async function completeEvaluation(id) {
@@ -619,16 +742,19 @@
           e.preventDefault();
 
           const score = parseFloat(document.getElementById("score").value);
-          if (score < 1 || score > 10) {
-            Utils.showNotification("Score must be between 1 and 10", "error");
+          if (score < 0 || score > 100) {
+            Utils.showNotification("Score must be between 0 and 100", "error");
             return;
           }
 
           const formData = {
             employee_id: parseInt(document.getElementById("employee_id").value),
+            evaluator_id: 1,
             evaluation_date: document.getElementById("evaluation_date").value,
             score: score,
-            comments: document.getElementById("comments").value,
+            strengths: document.getElementById("strengths").value,
+            weaknesses: document.getElementById("weaknesses").value,
+            goals: document.getElementById("goals").value,
             status: document.querySelector('input[name="status"]:checked')
               .value,
           };
