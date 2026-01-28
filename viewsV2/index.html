@@ -15,7 +15,11 @@
     <div
       class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center shadow-md"
     >
-      <h2 class="text-xl font-bold text-blue-400 italic">HR_DB</h2>
+      <a
+        href="index.html"
+        class="text-xl font-bold text-blue-400 italic hover:text-blue-300 transition"
+        >HR_DB</a
+      >
       <button onclick="toggleSidebar()" class="text-2xl focus:outline-none">
         <i class="fas fa-bars"></i>
       </button>
@@ -285,8 +289,11 @@
       // Load dashboard stats
       async function loadDashboardStats() {
         try {
+          console.log("Loading dashboard stats...");
+
           // Load employees count
           const empResult = await Utils.apiCall("/employees/list.php");
+          console.log("Employees result:", empResult);
           if (empResult.success && empResult.data) {
             document.getElementById("total-employees").textContent =
               empResult.data.length;
@@ -294,6 +301,7 @@
 
           // Load departments count
           const deptResult = await Utils.apiCall("/departments/list.php");
+          console.log("Departments result:", deptResult);
           if (deptResult.success && deptResult.data) {
             document.getElementById("total-departments").textContent =
               deptResult.data.length;
@@ -301,6 +309,7 @@
 
           // Load positions count
           const posResult = await Utils.apiCall("/positions/list.php");
+          console.log("Positions result:", posResult);
           if (posResult.success && posResult.data) {
             document.getElementById("total-positions").textContent =
               posResult.data.length;
@@ -308,32 +317,110 @@
 
           // Load pending leaves count
           const leaveResult = await Utils.apiCall("/leave/list.php");
+          console.log("Leave result:", leaveResult);
           if (leaveResult.success && leaveResult.data) {
-            const pending = leaveResult.data.filter(
-              (l) => l.STATUS === "PENDING",
-            ).length;
+            console.log("Leave data sample:", leaveResult.data[0]);
+            console.log("Total leaves:", leaveResult.data.length);
+
+            // Field is LEAVE_STATUS not STATUS
+            const pending = leaveResult.data.filter((l) => {
+              const status = l.LEAVE_STATUS?.toUpperCase().trim() || "";
+              console.log("Leave status:", status);
+              return status === "PENDING";
+            }).length;
+
+            console.log("Pending leaves count:", pending);
             document.getElementById("pending-leaves").textContent = pending;
+          } else {
+            console.log("No leave data available");
+            document.getElementById("pending-leaves").textContent = "0";
           }
         } catch (error) {
           console.error("Failed to load dashboard stats:", error);
+          Utils.showNotification(
+            "Failed to load dashboard data. Check if server is running.",
+            "error",
+          );
         }
+      }
+
+      // Format Oracle timestamp to readable time
+      function formatOracleTime(timestamp) {
+        if (!timestamp) return "N/A";
+        // Oracle format: "01-JAN-26 05.59.00.000000 AM"
+        // Extract time part and convert periods to colons
+        const parts = timestamp.split(" ");
+        if (parts.length >= 3) {
+          const timePart = parts[1].split("."); // ["05", "59", "00", "000000"]
+          return `${timePart[0]}:${timePart[1]} ${parts[2]}`; // "05:59 AM"
+        }
+        return timestamp;
       }
 
       // Load today's attendance
       async function loadTodayAttendance() {
         try {
+          console.log("Loading today's attendance...");
           const result = await Utils.apiCall("/attendance/list.php");
+          console.log("Attendance result:", result);
           const container = document.getElementById("recent-attendance");
 
-          if (result.success && result.data) {
-            const today = new Date().toISOString().split("T")[0];
+          if (result.success && result.data && result.data.length > 0) {
+            // Get today's date in Oracle format (DD-MMM-YY)
+            const today = new Date();
+            const months = [
+              "JAN",
+              "FEB",
+              "MAR",
+              "APR",
+              "MAY",
+              "JUN",
+              "JUL",
+              "AUG",
+              "SEP",
+              "OCT",
+              "NOV",
+              "DEC",
+            ];
+            const oracleToday = `${today.getDate().toString().padStart(2, "0")}-${months[today.getMonth()]}-${today.getFullYear().toString().slice(-2)}`;
+
+            console.log("Today's date (Oracle format):", oracleToday);
+            console.log(
+              "Sample attendance date:",
+              result.data[0].ATTENDANCE_DATE,
+            );
+
             const todayAttendance = result.data
-              .filter((att) => att.ATTENDANCE_DATE === today)
+              .filter((att) => att.ATTENDANCE_DATE === oracleToday)
               .slice(0, 5);
 
+            console.log("Filtered today's attendance:", todayAttendance);
+
             if (todayAttendance.length === 0) {
+              // Show recent 5 if no attendance today
+              const recentAttendance = result.data.slice(0, 5);
               container.innerHTML =
-                '<p class="text-gray-500 text-sm text-center py-4">No attendance records today</p>';
+                '<p class="text-gray-500 text-xs text-center mb-3">No attendance today. Showing recent:</p>' +
+                recentAttendance
+                  .map(
+                    (att) => `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-600 text-white rounded-full flex items-center justify-center mr-3 text-xs font-bold">
+                                    ${att.FIRST_NAME ? att.FIRST_NAME[0] : "E"}${att.LAST_NAME ? att.LAST_NAME[0] : "E"}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-semibold text-gray-900">${att.FIRST_NAME || "Employee"} ${att.LAST_NAME || att.EMPLOYEE_ID}</div>
+                                    <div class="text-xs text-gray-500">${att.ATTENDANCE_DATE}</div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs rounded-full ${att.CHECK_OUT_TIME ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}">
+                                ${att.CHECK_OUT_TIME ? "Completed" : "Active"}
+                            </span>
+                        </div>
+                    `,
+                  )
+                  .join("");
               return;
             }
 
@@ -343,15 +430,15 @@
                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div class="flex items-center">
                                 <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-full flex items-center justify-center mr-3 text-xs font-bold">
-                                    ${att.FIRST_NAME[0]}${att.LAST_NAME[0]}
+                                    ${att.FIRST_NAME ? att.FIRST_NAME[0] : "E"}${att.LAST_NAME ? att.LAST_NAME[0] : "E"}
                                 </div>
                                 <div>
-                                    <div class="text-sm font-semibold text-gray-900">${att.FIRST_NAME} ${att.LAST_NAME}</div>
-                                    <div class="text-xs text-gray-500">In: ${att.CHECK_IN_TIME}</div>
+                                    <div class="text-sm font-semibold text-gray-900">${att.FIRST_NAME || "Employee"} ${att.LAST_NAME || att.EMPLOYEE_ID}</div>
+                                    <div class="text-xs text-gray-500">In: ${formatOracleTime(att.CHECK_IN_TIME)}</div>
                                 </div>
                             </div>
                             <span class="px-2 py-1 text-xs rounded-full ${att.CHECK_OUT_TIME ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}">
-                                ${att.CHECK_OUT_TIME ? "Out: " + att.CHECK_OUT_TIME : "Active"}
+                                ${att.CHECK_OUT_TIME ? "Out: " + formatOracleTime(att.CHECK_OUT_TIME) : "Active"}
                             </span>
                         </div>
                     `,
@@ -370,8 +457,11 @@
 
       // Load on page ready
       document.addEventListener("DOMContentLoaded", () => {
-        loadDashboardStats();
-        loadTodayAttendance();
+        // Wait for sidebar to load first
+        setTimeout(() => {
+          loadDashboardStats();
+          loadTodayAttendance();
+        }, 500);
       });
     </script>
   </body>

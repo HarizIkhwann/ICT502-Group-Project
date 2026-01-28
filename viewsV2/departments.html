@@ -258,19 +258,20 @@
       }
 
       // Open modal
-      function openModal(dept = null) {
+      async function openModal(dept = null) {
         const modal = document.getElementById("modal");
         const form = document.getElementById("dept-form");
         const title = document.getElementById("modal-title");
 
-        // Load managers before opening modal
-        loadManagers();
+        // Load managers before opening modal and wait for it to complete
+        await loadManagers();
 
         if (dept) {
           editingId = dept.DEPARTMENT_ID;
           document.getElementById("dept_name").value = dept.DEPARTMENT_NAME;
           document.getElementById("location").value = dept.LOCATION;
           document.getElementById("budget").value = dept.BUDGET;
+          // Set manager value after managers are loaded
           document.getElementById("manager_id").value = dept.MANAGER_ID || "";
           title.textContent = "Edit Department";
         } else {

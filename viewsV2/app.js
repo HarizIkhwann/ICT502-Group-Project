@@ -46,13 +46,45 @@ const Utils = {
     overlay?.classList.toggle("hidden");
   },
 
+  // Set active link in sidebar
+  setActiveSidebarLink() {
+    const currentPath =
+      window.location.pathname.split("/").pop() || "index.html";
+    const links = document.querySelectorAll(".nav-link");
+
+    links.forEach((link) => {
+      const linkPage = link.getAttribute("data-page");
+      if (linkPage === currentPath) {
+        link.classList.add(
+          "bg-blue-600/10",
+          "text-blue-400",
+          "border-l-4",
+          "border-blue-500",
+          "pl-3",
+        );
+        link.classList.remove("px-4");
+        const icon = link.querySelector("i");
+        if (icon) icon.classList.add("text-blue-400");
+      }
+    });
+  },
+
   // Load sidebar
   async loadSidebar() {
     try {
       const response = await fetch("sidebar.html");
+      if (!response.ok) {
+        throw new Error(`Failed to load sidebar: ${response.status}`);
+      }
       const html = await response.text();
       const container = document.getElementById("sidebar-container");
-      if (container) container.innerHTML = html;
+      if (container) {
+        container.innerHTML = html;
+        // Set active link after sidebar is loaded
+        setTimeout(() => {
+          Utils.setActiveSidebarLink();
+        }, 50);
+      }
     } catch (error) {
       console.error("Failed to load sidebar:", error);
     }
