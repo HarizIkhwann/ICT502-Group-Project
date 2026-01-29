@@ -202,12 +202,13 @@
                   <th class="px-6 py-4">Duration</th>
                   <th class="px-6 py-4">Days</th>
                   <th class="px-6 py-4">Status</th>
+                  <th class="px-6 py-4">Approved By</th>
                   <th class="px-6 py-4 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody id="table-body" class="divide-y divide-gray-100 text-sm">
                 <tr>
-                  <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                  <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                     Loading...
                   </td>
                 </tr>
@@ -338,11 +339,15 @@
         class="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden"
       >
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 text-white">
+        <div
+          class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 text-white"
+        >
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <div id="details-avatar" class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mr-4 font-bold text-2xl">
-              </div>
+              <div
+                id="details-avatar"
+                class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mr-4 font-bold text-2xl"
+              ></div>
               <div>
                 <h2 id="details-name" class="text-2xl font-bold"></h2>
                 <p id="details-position" class="text-blue-100 text-sm"></p>
@@ -359,22 +364,31 @@
 
         <!-- Content -->
         <div class="p-6">
-          <div class="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6" id="details-status-badge"></div>
-          
+          <div
+            class="inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-6"
+            id="details-status-badge"
+          ></div>
+
           <div class="grid md:grid-cols-2 gap-8">
             <!-- Leave Information -->
             <div>
-              <h3 class="flex items-center text-lg font-bold text-gray-800 mb-4">
+              <h3
+                class="flex items-center text-lg font-bold text-gray-800 mb-4"
+              >
                 <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
                 Leave Information
               </h3>
               <div class="space-y-3">
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Leave ID</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Leave ID</label
+                  >
                   <p id="details-id" class="text-gray-900 font-medium"></p>
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Leave Type</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Leave Type</label
+                  >
                   <select
                     id="details-type"
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-medium"
@@ -383,7 +397,9 @@
                   </select>
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Start Date</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Start Date</label
+                  >
                   <input
                     type="date"
                     id="details-start"
@@ -391,7 +407,9 @@
                   />
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">End Date</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >End Date</label
+                  >
                   <input
                     type="date"
                     id="details-end"
@@ -399,7 +417,9 @@
                   />
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Duration</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Duration</label
+                  >
                   <p id="details-days" class="text-gray-900 font-medium"></p>
                 </div>
               </div>
@@ -407,25 +427,52 @@
 
             <!-- Request Details -->
             <div>
-              <h3 class="flex items-center text-lg font-bold text-gray-800 mb-4">
+              <h3
+                class="flex items-center text-lg font-bold text-gray-800 mb-4"
+              >
                 <i class="fas fa-info-circle text-blue-600 mr-2"></i>
                 Request Details
               </h3>
               <div class="space-y-3">
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Application Date</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Application Date</label
+                  >
                   <p id="details-applied" class="text-gray-900 font-medium"></p>
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Status</label>
-                  <p id="details-status-text" class="text-gray-900 font-medium"></p>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Status</label
+                  >
+                  <p
+                    id="details-status-text"
+                    class="text-gray-900 font-medium"
+                  ></p>
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Approval Date</label>
-                  <p id="details-approval-date" class="text-gray-900 font-medium"></p>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Approval Date</label
+                  >
+                  <p
+                    id="details-approval-date"
+                    class="text-gray-900 font-medium"
+                  ></p>
+                </div>
+                <div id="approver-section" class="hidden">
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Approved/Rejected By</label
+                  >
+                  <select
+                    id="details-approver"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-900 font-medium"
+                  >
+                    <option value="">Select Approver</option>
+                  </select>
                 </div>
                 <div>
-                  <label class="text-xs text-gray-500 uppercase font-semibold">Reason</label>
+                  <label class="text-xs text-gray-500 uppercase font-semibold"
+                    >Reason</label
+                  >
                   <textarea
                     id="details-reason"
                     rows="4"
@@ -483,33 +530,42 @@
       // Convert Oracle date format to YYYY-MM-DD
       function convertDateToISO(dateString) {
         if (!dateString) return "";
-        
+
         if (dateString.match(/^\d{4}-\d{2}-\d{2}/)) {
           return dateString.split("T")[0];
         }
-        
+
         const months = {
-          JAN: "01", FEB: "02", MAR: "03", APR: "04",
-          MAY: "05", JUN: "06", JUL: "07", AUG: "08",
-          SEP: "09", OCT: "10", NOV: "11", DEC: "12"
+          JAN: "01",
+          FEB: "02",
+          MAR: "03",
+          APR: "04",
+          MAY: "05",
+          JUN: "06",
+          JUL: "07",
+          AUG: "08",
+          SEP: "09",
+          OCT: "10",
+          NOV: "11",
+          DEC: "12",
         };
-        
+
         const parts = dateString.split("-");
         if (parts.length === 3) {
           const day = parts[0].padStart(2, "0");
           const month = months[parts[1].toUpperCase()];
           let year = parts[2];
-          
+
           if (year.length === 2) {
             const yearNum = parseInt(year);
             year = yearNum > 50 ? "19" + year : "20" + year;
           }
-          
+
           if (month) {
             return `${year}-${month}-${day}`;
           }
         }
-        
+
         return "";
       }
 
@@ -523,8 +579,12 @@
           editingId = leave.LEAVE_ID;
           document.getElementById("employee_id").value = leave.EMPLOYEE_ID;
           document.getElementById("leave_type_id").value = leave.LEAVE_TYPE_ID;
-          document.getElementById("start_date").value = convertDateToISO(leave.START_DATE);
-          document.getElementById("end_date").value = convertDateToISO(leave.END_DATE);
+          document.getElementById("start_date").value = convertDateToISO(
+            leave.START_DATE,
+          );
+          document.getElementById("end_date").value = convertDateToISO(
+            leave.END_DATE,
+          );
           document.getElementById("reason").value = leave.REASON;
           title.textContent = "Edit Leave Request";
         } else {
@@ -546,11 +606,15 @@
           const result = await Utils.apiCall("/employees/list.php");
           if (result.success && result.data) {
             const select = document.getElementById("employee_id");
+            const approverSelect = document.getElementById("details-approver");
             const filter = document.getElementById("employee-filter");
 
             result.data.forEach((emp) => {
               const option = `<option value="${emp.EMPLOYEE_ID}">${emp.FIRST_NAME} ${emp.LAST_NAME}</option>`;
               select.innerHTML += option;
+              if (approverSelect) {
+                approverSelect.innerHTML += option;
+              }
               filter.innerHTML += option;
             });
           }
@@ -566,7 +630,7 @@
           if (result.success && result.data) {
             const select = document.getElementById("leave_type_id");
             const detailsSelect = document.getElementById("details-type");
-            
+
             result.data.forEach((type) => {
               const option = `<option value="${type.LEAVE_TYPE_ID}">${type.TYPE_NAME}</option>`;
               select.innerHTML += option;
@@ -584,6 +648,7 @@
           const result = await Utils.apiCall("/leave/list.php");
 
           if (result.success && result.data) {
+            console.log(`Leave records loaded: ${result.data.length} records`);
             allLeave = result.data;
             displayLeave(result.data);
             updateStats(result.data);
@@ -614,7 +679,11 @@
 
         if (statusFilter) {
           filtered = filtered.filter((leave) => {
-            const status = leave.LEAVE_STATUS || leave.STATUS || leave.APPROVAL_STATUS || "PENDING";
+            const status =
+              leave.LEAVE_STATUS ||
+              leave.STATUS ||
+              leave.APPROVAL_STATUS ||
+              "PENDING";
             return status === statusFilter;
           });
         }
@@ -648,7 +717,7 @@
 
         if (!leave || leave.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No leave requests found</td></tr>';
+            '<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No leave requests found</td></tr>';
           return;
         }
 
@@ -656,9 +725,10 @@
           .map((lv) => {
             const days = calculateDays(lv.START_DATE, lv.END_DATE);
 
-            const status = lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
+            const status =
+              lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
             const leaveType = lv.TYPE_NAME || lv.LEAVE_TYPE || "N/A";
-            
+
             let statusClass = "";
             let statusIcon = "";
             switch (status) {
@@ -674,6 +744,19 @@
                 statusClass = "bg-red-100 text-red-700";
                 statusIcon = "fa-times-circle";
                 break;
+            }
+
+            // Format approved by info
+            let approvedByText = "-";
+            if (
+              (status === "APPROVED" || status === "REJECTED") &&
+              lv.APPROVED_BY
+            ) {
+              if (lv.APPROVED_BY_FIRST_NAME && lv.APPROVED_BY_LAST_NAME) {
+                approvedByText = `${lv.APPROVED_BY_FIRST_NAME} ${lv.APPROVED_BY_LAST_NAME}`;
+              } else {
+                approvedByText = `ID: ${lv.APPROVED_BY}`;
+              }
             }
 
             return `
@@ -703,6 +786,9 @@
                             <i class="fas ${statusIcon} mr-1"></i>${status}
                         </span>
                     </td>
+                    <td class="px-6 py-4">
+                        <span class="text-gray-600 text-xs">${approvedByText}</span>
+                    </td>
                     <td class="px-6 py-4 text-center space-x-2">
                         <button onclick='viewDetails(${JSON.stringify(lv).replace(/'/g, "&apos;")})' class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
                             <i class="fas fa-eye mr-1"></i>View Details
@@ -719,17 +805,20 @@
         document.getElementById("total-requests").textContent = allLeave.length;
 
         const pending = allLeave.filter((lv) => {
-          const status = lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
+          const status =
+            lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
           return status === "PENDING";
         }).length;
-        
+
         const approved = allLeave.filter((lv) => {
-          const status = lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
+          const status =
+            lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
           return status === "APPROVED";
         }).length;
-        
+
         const rejected = allLeave.filter((lv) => {
-          const status = lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
+          const status =
+            lv.LEAVE_STATUS || lv.STATUS || lv.APPROVAL_STATUS || "PENDING";
           return status === "REJECTED";
         }).length;
 
@@ -744,20 +833,20 @@
       }
 
       // Update status
-      async function updateStatus(leaveId, status) {
+      async function updateStatus(leaveId, status, approverId = null) {
         const action = status === "APPROVED" ? "approve" : "reject";
         if (!confirm(`Are you sure you want to ${action} this leave request?`))
           return;
 
         try {
-          console.log("Updating status:", { leaveId, status }); // Debug log
-          
+          console.log("Updating status:", { leaveId, status, approverId }); // Debug log
+
           const result = await Utils.apiCall("/leave/update-status.php", {
             method: "POST",
-            body: JSON.stringify({ 
-              leave_id: leaveId, 
+            body: JSON.stringify({
+              leave_id: leaveId,
               status: status,
-              approved_by: null // Set to null until login system is implemented
+              approved_by: approverId,
             }),
           });
 
@@ -786,7 +875,7 @@
 
         try {
           console.log("Deleting leave:", id); // Debug log
-          
+
           const result = await Utils.apiCall("/leave/delete.php", {
             method: "POST",
             body: JSON.stringify({ leave_id: id }),
@@ -829,7 +918,9 @@
 
           const formData = {
             employee_id: parseInt(document.getElementById("employee_id").value),
-            leave_type_id: parseInt(document.getElementById("leave_type_id").value),
+            leave_type_id: parseInt(
+              document.getElementById("leave_type_id").value,
+            ),
             start_date: startDate,
             end_date: endDate,
             reason: document.getElementById("reason").value,
@@ -872,18 +963,22 @@
 
       function viewDetails(leave) {
         currentLeaveDetails = leave;
-        const status = leave.LEAVE_STATUS || leave.STATUS || leave.APPROVAL_STATUS || "PENDING";
+        const status =
+          leave.LEAVE_STATUS ||
+          leave.STATUS ||
+          leave.APPROVAL_STATUS ||
+          "PENDING";
         const leaveType = leave.TYPE_NAME || leave.LEAVE_TYPE || "N/A";
         const days = calculateDays(leave.START_DATE, leave.END_DATE);
 
         // Set avatar
-        document.getElementById("details-avatar").textContent = 
+        document.getElementById("details-avatar").textContent =
           `${leave.FIRST_NAME[0]}${leave.LAST_NAME[0]}`;
 
         // Set header info
-        document.getElementById("details-name").textContent = 
+        document.getElementById("details-name").textContent =
           `${leave.FIRST_NAME} ${leave.LAST_NAME}`;
-        document.getElementById("details-position").textContent = 
+        document.getElementById("details-position").textContent =
           leave.POSITION_NAME || "Employee";
 
         // Set status badge
@@ -905,38 +1000,54 @@
 
         // Set leave information
         document.getElementById("details-id").textContent = leave.LEAVE_ID;
-        
+
         // Populate leave type dropdown
         const typeSelect = document.getElementById("details-type");
         typeSelect.value = leave.LEAVE_TYPE_ID;
-        
+
         // Set dates as editable inputs
-        document.getElementById("details-start").value = convertDateToISO(leave.START_DATE);
-        document.getElementById("details-end").value = convertDateToISO(leave.END_DATE);
-        document.getElementById("details-days").textContent = `${days} ${days === 1 ? "day" : "days"}`;
+        document.getElementById("details-start").value = convertDateToISO(
+          leave.START_DATE,
+        );
+        document.getElementById("details-end").value = convertDateToISO(
+          leave.END_DATE,
+        );
+        document.getElementById("details-days").textContent =
+          `${days} ${days === 1 ? "day" : "days"}`;
 
         // Set request details
-        document.getElementById("details-applied").textContent = 
-          leave.APPLICATION_DATE ? Utils.formatDate(leave.APPLICATION_DATE) : "N/A";
+        document.getElementById("details-applied").textContent =
+          leave.APPLICATION_DATE
+            ? Utils.formatDate(leave.APPLICATION_DATE)
+            : "N/A";
         document.getElementById("details-status-text").textContent = status;
-        document.getElementById("details-approval-date").textContent = 
-          leave.APPROVAL_DATE ? Utils.formatDate(leave.APPROVAL_DATE) : "Not yet approved";
+        document.getElementById("details-approval-date").textContent =
+          leave.APPROVAL_DATE
+            ? Utils.formatDate(leave.APPROVAL_DATE)
+            : "Not yet approved";
         document.getElementById("details-reason").value = leave.REASON || "";
 
         // Update duration when dates change
-        document.getElementById("details-start").addEventListener("change", updateDetailsDuration);
-        document.getElementById("details-end").addEventListener("change", updateDetailsDuration);
+        document
+          .getElementById("details-start")
+          .addEventListener("change", updateDetailsDuration);
+        document
+          .getElementById("details-end")
+          .addEventListener("change", updateDetailsDuration);
 
         // Show/hide approve/reject buttons based on status
         const approveBtn = document.getElementById("details-approve-btn");
         const rejectBtn = document.getElementById("details-reject-btn");
-        
+        const approverSection = document.getElementById("approver-section");
+
         if (status === "PENDING") {
           approveBtn.classList.remove("hidden");
           rejectBtn.classList.remove("hidden");
+          approverSection.classList.remove("hidden");
         } else {
           approveBtn.classList.add("hidden");
           rejectBtn.classList.add("hidden");
+          approverSection.classList.add("hidden");
         }
 
         // Show modal
@@ -951,13 +1062,14 @@
       function updateDetailsDuration() {
         const startDate = document.getElementById("details-start").value;
         const endDate = document.getElementById("details-end").value;
-        
+
         if (startDate && endDate) {
           const start = new Date(startDate);
           const end = new Date(endDate);
           const diffTime = Math.abs(end - start);
           const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-          document.getElementById("details-days").textContent = `${days} ${days === 1 ? "day" : "days"}`;
+          document.getElementById("details-days").textContent =
+            `${days} ${days === 1 ? "day" : "days"}`;
         }
       }
 
@@ -966,7 +1078,9 @@
 
         const startDate = document.getElementById("details-start").value;
         const endDate = document.getElementById("details-end").value;
-        const leaveTypeId = parseInt(document.getElementById("details-type").value);
+        const leaveTypeId = parseInt(
+          document.getElementById("details-type").value,
+        );
         const reason = document.getElementById("details-reason").value;
 
         if (!startDate || !endDate || !leaveTypeId || !reason) {
@@ -988,7 +1102,7 @@
               leave_type_id: leaveTypeId,
               start_date: startDate,
               end_date: endDate,
-              reason: reason
+              reason: reason,
             }),
           });
 
@@ -1000,7 +1114,10 @@
             throw new Error(result.message || "Failed to update leave");
           }
         } catch (error) {
-          Utils.showNotification("Failed to save changes: " + error.message, "error");
+          Utils.showNotification(
+            "Failed to save changes: " + error.message,
+            "error",
+          );
         }
       }
 
@@ -1023,7 +1140,16 @@
       function approveFromDetails() {
         console.log("approveFromDetails called", currentLeaveDetails); // Debug log
         if (currentLeaveDetails) {
-          updateStatus(currentLeaveDetails.LEAVE_ID, 'APPROVED');
+          const approverId = document.getElementById("details-approver").value;
+          if (!approverId) {
+            Utils.showNotification("Please select an approver", "error");
+            return;
+          }
+          updateStatus(
+            currentLeaveDetails.LEAVE_ID,
+            "APPROVED",
+            parseInt(approverId),
+          );
         } else {
           console.error("No currentLeaveDetails"); // Debug log
         }
@@ -1032,7 +1158,19 @@
       function rejectFromDetails() {
         console.log("rejectFromDetails called", currentLeaveDetails); // Debug log
         if (currentLeaveDetails) {
-          updateStatus(currentLeaveDetails.LEAVE_ID, 'REJECTED');
+          const approverId = document.getElementById("details-approver").value;
+          if (!approverId) {
+            Utils.showNotification(
+              "Please select who is rejecting this leave",
+              "error",
+            );
+            return;
+          }
+          updateStatus(
+            currentLeaveDetails.LEAVE_ID,
+            "REJECTED",
+            parseInt(approverId),
+          );
         } else {
           console.error("No currentLeaveDetails"); // Debug log
         }

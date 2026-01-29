@@ -26,10 +26,15 @@ class Leave {
     
     // Get all leave records
     public function getAllLeaves() {
-        $query = "SELECT l.*, e.first_name, e.last_name, lt.type_name, lt.description as type_description
+        $query = "SELECT l.*, 
+                  e.first_name, e.last_name, 
+                  lt.type_name, lt.description as type_description,
+                  approver.first_name as approved_by_first_name,
+                  approver.last_name as approved_by_last_name
                   FROM {$this->table} l
                   INNER JOIN EMPLOYEE e ON l.employee_id = e.employee_id
                   INNER JOIN LEAVE_TYPE lt ON l.leave_type_id = lt.leave_type_id
+                  LEFT JOIN EMPLOYEE approver ON l.approved_by = approver.employee_id
                   ORDER BY l.created_date DESC";
         
         $stid = oci_parse($this->connection, $query);
