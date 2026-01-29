@@ -113,12 +113,28 @@ const Utils = {
       throw error;
     }
   },
+
+  // Logout function
+  logout() {
+    // Clear any stored session data
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Show logout message
+    Utils.showNotification("Logged out successfully", "success");
+
+    // Redirect to login page after a short delay
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1000);
+  },
 };
 
 // Make Utils available globally
 window.Utils = Utils;
 window.CONFIG = CONFIG;
 window.toggleSidebar = Utils.toggleSidebar;
+window.logout = Utils.logout;
 
 // Auto-load sidebar on page load
 document.addEventListener("DOMContentLoaded", () => {

@@ -409,14 +409,18 @@
             <!-- Left Column -->
             <div class="space-y-4">
               <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
-                <i class="fas fa-calendar-alt mr-2 text-blue-600"></i> Period Details
+                <i class="fas fa-calendar-alt mr-2 text-blue-600"></i> Period
+                Details
               </h4>
               <div>
                 <label
                   class="text-sm font-semibold text-gray-500 uppercase tracking-wider"
                   >Pay Period</label
                 >
-                <p id="detail-pay-period" class="text-gray-900 font-semibold"></p>
+                <p
+                  id="detail-pay-period"
+                  class="text-gray-900 font-semibold"
+                ></p>
               </div>
               <div>
                 <label
@@ -437,14 +441,21 @@
             <!-- Right Column -->
             <div class="space-y-4">
               <h4 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">
-                <i class="fas fa-money-bill-wave mr-2 text-blue-600"></i> Payment Breakdown
+                <i class="fas fa-money-bill-wave mr-2 text-blue-600"></i>
+                Payment Breakdown
               </h4>
               <div class="bg-blue-50 p-4 rounded-lg">
                 <div class="flex justify-between mb-2">
                   <span class="text-gray-700">Gross Pay:</span>
-                  <span id="detail-gross" class="font-semibold text-gray-900"></span>
+                  <span
+                    id="detail-gross"
+                    class="font-semibold text-gray-900"
+                  ></span>
                 </div>
-                <div class="flex justify-between mb-2" id="detail-allowances-row">
+                <div
+                  class="flex justify-between mb-2"
+                  id="detail-allowances-row"
+                >
                   <span class="text-gray-700">Allowances:</span>
                   <span id="detail-allowances" class="text-gray-900"></span>
                 </div>
@@ -452,17 +463,31 @@
                   <span class="text-gray-700">Overtime:</span>
                   <span id="detail-overtime" class="text-gray-900"></span>
                 </div>
-                <div class="flex justify-between mb-2" id="detail-deductions-row">
+                <div
+                  class="flex justify-between mb-2"
+                  id="detail-deductions-row"
+                >
                   <span class="text-gray-700">Deductions:</span>
-                  <span id="detail-deductions" class="text-red-600 font-semibold"></span>
+                  <span
+                    id="detail-deductions"
+                    class="text-red-600 font-semibold"
+                  ></span>
                 </div>
                 <div class="flex justify-between" id="detail-tax-row">
                   <span class="text-gray-700">Tax:</span>
-                  <span id="detail-tax" class="text-red-600 font-semibold"></span>
+                  <span
+                    id="detail-tax"
+                    class="text-red-600 font-semibold"
+                  ></span>
                 </div>
-                <div class="border-t border-blue-200 mt-3 pt-3 flex justify-between">
+                <div
+                  class="border-t border-blue-200 mt-3 pt-3 flex justify-between"
+                >
                   <span class="text-gray-900 font-bold">Net Pay:</span>
-                  <span id="detail-net" class="text-lg font-bold text-green-600"></span>
+                  <span
+                    id="detail-net"
+                    class="text-lg font-bold text-green-600"
+                  ></span>
                 </div>
               </div>
             </div>
@@ -510,8 +535,18 @@
         }
 
         const months = {
-          JAN: "01", FEB: "02", MAR: "03", APR: "04", MAY: "05", JUN: "06",
-          JUL: "07", AUG: "08", SEP: "09", OCT: "10", NOV: "11", DEC: "12",
+          JAN: "01",
+          FEB: "02",
+          MAR: "03",
+          APR: "04",
+          MAY: "05",
+          JUN: "06",
+          JUL: "07",
+          AUG: "08",
+          SEP: "09",
+          OCT: "10",
+          NOV: "11",
+          DEC: "12",
         };
 
         const parts = oracleDate.split("-");
@@ -535,24 +570,35 @@
 
       // Calculate net pay
       function calculateNetPay() {
-        const grossPay = parseFloat(document.getElementById("gross_pay").value) || 0;
-        const allowances = parseFloat(document.getElementById("allowances").value) || 0;
-        const overtime = parseFloat(document.getElementById("overtime_pay").value) || 0;
+        const grossPay =
+          parseFloat(document.getElementById("gross_pay").value) || 0;
+        const allowances =
+          parseFloat(document.getElementById("allowances").value) || 0;
+        const overtime =
+          parseFloat(document.getElementById("overtime_pay").value) || 0;
 
-        // Calculate deductions based on GrossPay
+        // Calculate deductions based on GrossPay (EPF + SOCSO only, tax separate)
         const epf = (grossPay * 0.11).toFixed(2);
         const socso = (grossPay * 0.005).toFixed(2);
         const tax = (grossPay * 0.05).toFixed(2);
-        const totalDeductions = (parseFloat(epf) + parseFloat(socso) + parseFloat(tax)).toFixed(2);
+        const totalDeductions = (parseFloat(epf) + parseFloat(socso)).toFixed(
+          2,
+        ); // Only EPF + SOCSO in deductions
 
         // Update deduction fields
         document.getElementById("epf").value = epf;
         document.getElementById("socso").value = socso;
-        document.getElementById("tax_amount").value = tax;
+        document.getElementById("tax_amount").value = tax; // Tax stored separately
         document.getElementById("deductions").value = totalDeductions;
 
-        // Calculate net pay: GrossPay + Allowances + Overtime - Deductions
-        const netPay = (grossPay + parseFloat(allowances) + parseFloat(overtime) - parseFloat(totalDeductions)).toFixed(2);
+        // Calculate net pay: GrossPay + Allowances + Overtime - Deductions - Tax
+        const netPay = (
+          grossPay +
+          parseFloat(allowances) +
+          parseFloat(overtime) -
+          parseFloat(totalDeductions) -
+          parseFloat(tax)
+        ).toFixed(2);
         document.getElementById("net_pay").value = Math.max(0, netPay);
       }
 
@@ -565,15 +611,21 @@
         if (payroll) {
           editingId = payroll.PAYROLL_ID;
           document.getElementById("employee_id").value = payroll.EMPLOYEE_ID;
-          document.getElementById("payment_method").value = payroll.PAYMENT_METHOD || "BANK_TRANSFER";
-          document.getElementById("pay_period_start").value = convertOracleDateToISO(payroll.PAY_PERIOD_START);
-          document.getElementById("pay_period_end").value = convertOracleDateToISO(payroll.PAY_PERIOD_END);
-          document.getElementById("payment_date").value = convertOracleDateToISO(payroll.PAYMENT_DATE);
+          document.getElementById("payment_method").value =
+            payroll.PAYMENT_METHOD || "BANK_TRANSFER";
+          document.getElementById("pay_period_start").value =
+            convertOracleDateToISO(payroll.PAY_PERIOD_START);
+          document.getElementById("pay_period_end").value =
+            convertOracleDateToISO(payroll.PAY_PERIOD_END);
+          document.getElementById("payment_date").value =
+            convertOracleDateToISO(payroll.PAYMENT_DATE);
           document.getElementById("gross_pay").value = payroll.GROSS_PAY || "";
-          document.getElementById("allowances").value = payroll.ALLOWANCES || "0";
-          document.getElementById("overtime_pay").value = payroll.OVERTIME_PAY || "0";
+          document.getElementById("allowances").value =
+            payroll.ALLOWANCES || "0";
+          document.getElementById("overtime_pay").value =
+            payroll.OVERTIME_PAY || "0";
           document.getElementById("net_pay").value = payroll.NET_PAY || "";
-          
+
           // Recalculate deductions based on loaded values
           calculateNetPay();
 
@@ -618,7 +670,8 @@
       // Load payroll data
       async function loadPayroll() {
         try {
-          const employeeFilter = document.getElementById("employee-filter").value;
+          const employeeFilter =
+            document.getElementById("employee-filter").value;
           const fromDate = document.getElementById("from-date").value;
           const toDate = document.getElementById("to-date").value;
 
@@ -633,13 +686,18 @@
           const result = await Utils.apiCall(endpoint);
 
           if (result.success && result.data) {
-            allPayroll = Array.isArray(result.data) ? result.data : [result.data];
+            allPayroll = Array.isArray(result.data)
+              ? result.data
+              : [result.data];
             displayPayroll(allPayroll);
           } else {
             throw new Error(result.message || "Failed to load payroll");
           }
         } catch (error) {
-          Utils.showNotification("Failed to load payroll: " + error.message, "error");
+          Utils.showNotification(
+            "Failed to load payroll: " + error.message,
+            "error",
+          );
           document.getElementById("table-body").innerHTML =
             '<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading data</td></tr>';
         }
@@ -686,9 +744,14 @@
 
       // View payroll details
       function viewPayrollDetails(payrollId) {
-        console.log("Viewing payroll ID:", payrollId, "Type:", typeof payrollId);
+        console.log(
+          "Viewing payroll ID:",
+          payrollId,
+          "Type:",
+          typeof payrollId,
+        );
         console.log("All payroll:", allPayroll);
-        
+
         const payroll = allPayroll.find((p) => p.PAYROLL_ID == payrollId);
         if (!payroll) {
           console.error("Payroll not found for ID:", payrollId);
@@ -701,7 +764,8 @@
 
         document.getElementById("detail-employee").textContent =
           `${payroll.FIRST_NAME} ${payroll.LAST_NAME}`;
-        document.getElementById("detail-period").textContent = `Payroll ID: ${payroll.PAYROLL_ID}`;
+        document.getElementById("detail-period").textContent =
+          `Payroll ID: ${payroll.PAYROLL_ID}`;
 
         document.getElementById("detail-pay-period").textContent =
           `${Utils.formatDate(payroll.PAY_PERIOD_START)} to ${Utils.formatDate(payroll.PAY_PERIOD_END)}`;
@@ -715,27 +779,39 @@
 
         // Show/hide components if they have values
         if (payroll.ALLOWANCES > 0) {
-          document.getElementById("detail-allowances-row").classList.remove("hidden");
+          document
+            .getElementById("detail-allowances-row")
+            .classList.remove("hidden");
           document.getElementById("detail-allowances").textContent =
             Utils.formatCurrency(payroll.ALLOWANCES);
         } else {
-          document.getElementById("detail-allowances-row").classList.add("hidden");
+          document
+            .getElementById("detail-allowances-row")
+            .classList.add("hidden");
         }
 
         if (payroll.OVERTIME_PAY > 0) {
-          document.getElementById("detail-overtime-row").classList.remove("hidden");
+          document
+            .getElementById("detail-overtime-row")
+            .classList.remove("hidden");
           document.getElementById("detail-overtime").textContent =
             Utils.formatCurrency(payroll.OVERTIME_PAY);
         } else {
-          document.getElementById("detail-overtime-row").classList.add("hidden");
+          document
+            .getElementById("detail-overtime-row")
+            .classList.add("hidden");
         }
 
         if (payroll.DEDUCTIONS > 0) {
-          document.getElementById("detail-deductions-row").classList.remove("hidden");
+          document
+            .getElementById("detail-deductions-row")
+            .classList.remove("hidden");
           document.getElementById("detail-deductions").textContent =
             Utils.formatCurrency(payroll.DEDUCTIONS);
         } else {
-          document.getElementById("detail-deductions-row").classList.add("hidden");
+          document
+            .getElementById("detail-deductions-row")
+            .classList.add("hidden");
         }
 
         if (payroll.TAX_AMOUNT > 0) {
@@ -779,7 +855,8 @@
 
       // Delete payroll
       async function deletePayroll(id) {
-        if (!confirm("Are you sure you want to delete this payroll record?")) return;
+        if (!confirm("Are you sure you want to delete this payroll record?"))
+          return;
 
         try {
           const result = await Utils.apiCall("/payroll/delete.php", {
@@ -807,16 +884,23 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
 
+          // Ensure calculations are up to date before submitting
+          calculateNetPay();
+
           const formData = {
             employee_id: parseInt(document.getElementById("employee_id").value),
             pay_period_start: document.getElementById("pay_period_start").value,
             pay_period_end: document.getElementById("pay_period_end").value,
             payment_date: document.getElementById("payment_date").value,
             gross_pay: parseFloat(document.getElementById("gross_pay").value),
-            allowances: parseFloat(document.getElementById("allowances").value) || 0,
-            overtime_pay: parseFloat(document.getElementById("overtime_pay").value) || 0,
-            deductions: parseFloat(document.getElementById("deductions").value) || 0,
-            tax_amount: parseFloat(document.getElementById("tax_amount").value) || 0,
+            allowances:
+              parseFloat(document.getElementById("allowances").value) || 0,
+            overtime_pay:
+              parseFloat(document.getElementById("overtime_pay").value) || 0,
+            deductions:
+              parseFloat(document.getElementById("deductions").value) || 0,
+            tax_amount:
+              parseFloat(document.getElementById("tax_amount").value) || 0, // Now send actual tax amount
             net_pay: parseFloat(document.getElementById("net_pay").value),
             payment_method: document.getElementById("payment_method").value,
           };
@@ -826,7 +910,9 @@
           }
 
           try {
-            const endpoint = editingId ? "/payroll/update.php" : "/payroll/create.php";
+            const endpoint = editingId
+              ? "/payroll/update.php"
+              : "/payroll/create.php";
             const result = await Utils.apiCall(endpoint, {
               method: "POST",
               body: JSON.stringify(formData),
